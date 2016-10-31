@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>项目列表</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<#include "/common.shtml" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+</head>
+<body>
+
+    <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+
+    <div class="content">
+        
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="table-wrapper users-list">
+                <div class="row-fluid header">
+                    <h3>项目</h3>
+                    <@perm url="/product/add.htm"><#if hasPerm>
+                    <div class="span10 pull-right">
+                        <a href="${rc.contextPath}/product/add.htm" class="btn-flat success pull-right">
+                            <span>&#43;</span>
+                            添加项目
+                        </a>
+                    </div>
+                    </#if></@perm>
+                </div>
+
+                <!-- Users table -->
+                <div class="row-fluid table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="span2 sortable">
+                                    <span class="line"></span>类型
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>价格（元）
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!-- row -->
+                        <#list list as p>
+                        <tr class="first">
+                            <td>
+                            	<#if (p.productType?? && p.productType == 1)>淘宝单品</#if>
+                            	<#if (p.productType?? && p.productType == 2)>淘宝清单</#if>
+                            	<#if (p.productType?? && p.productType == 3)>淘宝帖子</#if>
+                            	<#if (p.productType?? && p.productType == 4)>天猫单品</#if>
+                            	<#if (p.productType?? && p.productType == 5)>天猫清单</#if>
+                            	<#if (p.productType?? && p.productType == 6)>天猫帖子</#if>
+                            </td>
+                            <td>
+                                ¥${p.productPrice!0.00}
+                            </td>
+                            
+                            <td>
+                            	<ul class="actions">
+                                     <@perm url="/product/update.htm"><#if hasPerm><li class="last"><a href="${rc.contextPath}/product/update.htm?id=${p.id}">修改</a></li></#if></@perm>
+                                     <@perm url="/product/delete.htm"><#if hasPerm><li class="last"><a onclick="return confirm('确认删除吗');" href="${rc.contextPath}/product/delete.htm?id=${p.id}">删除</a></li></#if></@perm>
+                                 </ul>
+                             </td>
+                        </tr>
+                        </#list>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end users table -->
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->	
+    
+    
+<script type="text/javascript">
+var item = $("#sidebar-nav #dashboard-menu li[item=work]");
+item.addClass("active");
+item.children(".submenu").show();
+item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+</script>
+</body>
+</html>

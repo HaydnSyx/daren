@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>添加管理员</title>
+    
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+	<#include "/common.shtml" />
+    <link rel="stylesheet" href="${rc.contextPath}/css/compiled/new-user.css" type="text/css" media="screen" />
+    <style type="text/css">
+    .fastlawloan-comfirm-btn{
+		color: #FF8040;
+		text-align: center;
+	}
+	
+	.hide{
+		display: none;
+	}
+	#may1st-write-address{
+		font-style: italic;
+		text-decoration:underline;
+		cursor: pointer;
+	}
+	
+	#may1st-address-modal-bg{
+		width: 100%;
+		height: 100%;
+		background: #000;
+		filter: alpha(opacity=60);
+		background: rgba(0,0,0,0.6);
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 999;
+	}
+	
+	#may1st-address-modal{
+		width: 220px;
+		height: 200px;
+		background: #fff;
+		position: fixed;
+		z-index: 1000;
+	}
+	
+	.may1st-address-titlebox{
+		width: 100%;
+		height: 30px;
+		line-height: 30px;
+		background: #F3F3F3;
+		border-bottom: 1px solid #C4C4C4;
+	}
+	
+	.may1st-address-title-left{
+		float: left;
+		margin-left: 8px;
+		font-size: 18px;
+		font-weight: bold;
+	}
+	
+	.may1st-address-title-right{
+		float: right;
+		margin-right: 8px;
+		cursor: pointer;
+		font-weight: bolder;
+		font-size: 16px;
+	}
+	
+	#may1st-address-savebtn{
+		width: 100%;
+	}
+	
+	.may1st-address-stressed{
+		color: #E88F91;
+	}
+    </style>
+<body>
+
+        <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+	<!-- main container -->
+    <div class="content">
+        
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="new-user">
+                <div class="row-fluid header">
+                    <h3>添加管理员</h3>
+                </div>
+
+                <div class="row-fluid form-wrapper">
+                    <!-- left column -->
+                    <div class="span9 with-sidebar">
+                        <div class="container">
+                            <form  id="jvForm" class="new_user_form inline-input" action="${rc.contextPath}/muser/add.htm" method="post" >
+                            <input name="password" type="hidden" id="pwd"/>
+                                <div class="span12 field-box">
+                                    <label>用户名:</label>
+                                    <input id="username" class="span9" type="text" name="username"/>
+                                </div>
+                                
+                                <div class="span12 field-box">
+	                                <div style="width:70%; float: left;">
+	                                	<label>密码:</label>
+	                                	<input id="xs" class="span10" name="xs" type="password"/>
+	                                </div>
+	                                <div style="float: left;width: 8%;height: 30px;line-height:30px;background-color: #93FF93;text-align: center;">
+	                                	<a href="javascript:randPassword()" class="fastlawloan-comfirm-btn" style="text-decoration:none;">生成随机密码</a>
+	                                </div>
+	                                <div style="float: left;width: 8%;height: 30px;line-height:30px;background-color: #B8B8DC;text-align: center;">
+	                                	<a href="javascript:viewinfo()" class="fastlawloan-comfirm-btn" style="text-decoration:none;">查看信息</a>
+	                                </div>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>昵称:</label>
+                                    <input id="nickname" class="span9" type="text" name="nickname"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>头像:</label>
+                                    <div class="wysi-column">
+	                                    <input id="avatar" name="avatar" class="span6 form-control" type="text"/>
+	                                    <input type="button" class="btn-flat gray" id="uploadImgbtn" value="上传图片" />
+	                                    <img id="img_view" src="" style="display: none;width: 100px;height: 100px;"/>
+	                                </div>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>签名:</label>
+                                    <input id="sign" class="span9" type="text" name="sign"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>电话号码:</label>
+                                    <input id="phone" class="span9" type="text" name="phone"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>邮箱:</label>
+                                    <input id="email" class="span9" type="text" name="email"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>地址:</label>
+                                    <input id="address"class="span9" type="text" name="address"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>星级:</label>
+                                    <div class="ui-select span5">
+	                                    <select id="level" name="level">
+	                                    	<option value="">请选择</option>
+	                                    	<option value="1">1星</option>
+	                                    	<option value="2">2星</option>
+	                                    	<option value="3">3星</option>
+	                                    	<option value="4">4星</option>
+	                                    	<option value="5">5星</option>
+	                                    </select>
+                                    </div>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>角色:</label>
+                                    <div class="ui-select span5">
+                                        <select id="roleId" name="roleId">
+                                        <#if mUser??>
+                                        	<#list roles as role>
+	                                        	<#if (mUser.role.id == 1 || role.id != 1)>
+	                                        		<option value="${role.id!''}" />${role.name!''}
+	                                        	</#if>
+	                                        </#list>
+                                        </#if>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="span11 field-box actions">
+                                    <input type="submit" class="btn-glow primary" value="添加" />
+                                    <span>OR</span>
+                                    <input type="reset" value="重置" class="reset" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- side right column -->
+                    <div class="span3 form-sidebar pull-right">
+                        <div class="alert alert-info hidden-tablet">
+                            <i class="icon-lightbulb pull-left"></i>
+                            添加管理员账户时，用户名和密码不能为空
+                        </div>                        
+                        <h6>用户名建议使用公司邮箱</h6>
+                        <p>密码建议为统一的默认密码，然后让用户自己修改密码</p>
+                        <p>昵称用于更好的显示，建议填写</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->
+    
+    <!-- 隐藏的地址填写框的透明背景 -->
+<div class="hide" id="may1st-address-modal-bg">
+</div>
+<!-- 隐藏的地址填写框 -->
+<div class="hide" id="may1st-address-modal">
+	<div class="may1st-address-titlebox">
+		<div class="may1st-address-title-left">
+			信息
+		</div>
+		<div class="may1st-address-title-right" id="may1st-address-close-btn">
+			X
+		</div>
+	</div>
+    <div class="may1st-address-contentbox">
+   		<textarea id="info_dialog" rows="" cols="" style="margin: 0px 0px 10px; height: 123px; width: 205px; resize: none;"></textarea>
+   		<input id="copyButton" style="width: 220px;" type="button" value="复制到剪贴板" id="may1st-address-savebtn"/>
+    </div>
+</div>
+    
+	<script type="text/javascript" src="${rc.contextPath}/js/md5.js"></script>
+	<script type="text/javascript" src="${rc.contextPath}/js/zeroclipboard/ZeroClipboard.min.js"></script>
+	<script type="text/javascript" src="${rc.contextPath }/js/plupload_old/plupload.js"></script>
+	<script type="text/javascript" src="${rc.contextPath }/js/plupload_old/plupload.gears.js"></script>
+	<script type="text/javascript" src="${rc.contextPath }/js/plupload_old/plupload.silverlight.js"></script>
+	<script type="text/javascript" src="${rc.contextPath }/js/plupload_old/plupload.flash.js"></script>
+	<script type="text/javascript" src="${rc.contextPath }/js/plupload_old/plupload.browserplus.js"></script>
+	<script type="text/javascript" src="${rc.contextPath }/js/plupload_old/plupload.html4.js"></script>
+	<script type="text/javascript" src="${rc.contextPath }/js/plupload_old/plupload.html5.js"></script>
+    <script type="text/javascript">
+    	var clip = new ZeroClipboard(document.getElementById("copyButton"));
+    
+        $(function () {
+        	//------------ 在显示框 显现时 点击背景使其消失的事件
+        	$('#may1st-address-modal-bg').on('click',function(){
+        		$('#may1st-address-modal').fadeOut();
+        		$('#may1st-address-modal-bg').fadeOut();
+        	});
+        	//------------ 在显示框 显现时 点击其关闭按钮使其消失的事件
+        	$('#may1st-address-close-btn').on('click',function(){
+        		$('#may1st-address-modal').fadeOut();
+        		$('#may1st-address-modal-bg').fadeOut();
+        	});
+        	
+        	var uploader = new plupload.Uploader({
+        		runtimes : 'html5,gears,flash,silverlight,browserplus',
+                browse_button : 'uploadImgbtn', //触发文件选择对话框的按钮，为那个元素id
+                headers: {
+                    Authorization: ""
+                },
+                multipart_params: {
+           			filePath: '/headerImg',
+           			targetType : 'apache'
+           		},
+                url : '${rc.contextPath }/fileup.htm', //服务器端的上传页面地址
+        		filters:[ { title : "Excel files", extensions : "jpg,png" }],
+        		max_file_size:'8mb',
+                flash_swf_url : '${rc.contextPath }/js/plupload_old/plupload.flash.swf', //swf文件，当需要使用swf方式进行上传时需要配置该参数
+                silverlight_xap_url : '${rc.contextPath }/js/plupload_old/plupload.silverlight.xap' //silverlight文件，当需要使用silverlight方式进行上传时需要配置该参数
+	        });    
+	
+	        //在实例对象上调用init()方法进行初始化
+	        uploader.init();
+	        uploader.bind('FilesAdded',function(uploader,files){
+	                uploader.start();
+	        });
+	        uploader.bind('UploadProgress',function(uploader,file){
+	        	layer.tips('上传中...' + file.percent + '%', '#uploadImgbtn');
+	        });
+	        uploader.bind('error',function(uploader,errObject){
+	        	if(errObject.code == -600) {
+	        		layer.msg("图片太大，请上传小于8兆的图片", {icon: 2});
+	        	}else if(errObject.code == -601) {
+	        		layer.msg("请上传png,gif,jpg等正确的图片格式", {icon: 2});
+	        	}else{
+	        		layer.msg("文件上传失败", {icon: 2});
+	        	}
+	        });
+	        uploader.bind('FileUploaded',function(uploader,file,obj){
+            	var result = eval("(" + obj.response + ")");
+	           	if(result.error == 0) {
+	           		var url = result.url;
+	           		//上传成功后的回调
+	           		$("#avatar").val(url);
+	           		$("#img_view").attr("src",url);
+	           		$("#img_view").show();
+	           	}else {
+	           		layer.msg(result.message, {icon: 2});
+	           	}
+      		});
+        	
+        	
+            // toggle form between inline and normal inputs
+            var $buttons = $(".toggle-inputs button");
+            var $form = $("form.new_user_form");
+
+            $buttons.click(function () {
+                var mode = $(this).data("input");
+                $buttons.removeClass("active");
+                $(this).addClass("active");
+
+                if (mode === "inline") {
+                    $form.addClass("inline-input");
+                } else {
+                    $form.removeClass("inline-input");
+                }
+            });
+            
+            $("#jvForm").validate({
+        		onkeyup:false,
+        		errorPlacement:function(error,element){
+        			if(error[0].innerText != ""){
+                		layer.tips(error[0].innerText, '#'+element.context.id, {tips: [3,'#4c4c4c'],tipsMore: true});
+                		$('.layui-layer-tips .layui-layer-content').css({'color':'#ff1e22'});
+                	}
+        	    },
+        		submitHandler: function(form) {  
+        			 var password = $("#xs").val();
+        			 if(!password || password.length <=0) {
+        			 	alert("密码不能为空");
+        			 	return false;
+        			 }
+        			 $("#pwd").val(hex_md5(password));
+        			 $(form).ajaxSubmit(function(data){
+     	               		var url = "${rc.contextPath}/muser/list.htm";
+     	               		window.location.href= url;
+        	   		  });
+        		} ,
+        		rules: {	
+        			username: {
+        				required: true 
+        			},
+        			xs: {
+        				required: true,
+        				rangelength:[6,16] 
+        			}
+        		},
+        		messages: {
+        			username: "请输入用户名",
+        			xs: {
+        				required:"请输入密码"
+        			}
+        		}
+        	});
+            
+            clip.on("ready", function(){
+            	clip.on("copy", function(event){
+            		if($("#username").val() != "" && $("#xs").val() != ""){
+            			event.clipboardData.setData('text/plain', "用户名：" + $("#username").val() + "\n" + "密码：" + $("#xs").val());
+            		}
+            	});
+            	clip.on("aftercopy", function(event){
+            		layer.msg("信息已经复制到剪贴板 !", {icon: 1});
+            	});
+            });
+            
+            clip.on('error', function(event) {
+                ZeroClipboard.destroy();
+            });
+        });
+        
+        var item = $("#sidebar-nav #dashboard-menu li[item=muser]");
+        item.addClass("active");
+        item.children(".submenu").show();
+        item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+        
+        
+        function randPassword() {
+	        var text=['abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ','1234567890','~!@#$%^&*()_+";",./?<>'];
+	        var rand = function(min, max){return Math.floor(Math.max(min, Math.random() * (max+1)));}
+	        var len = rand(8, 16); // 长度为8-16
+	        var pw = '';
+	        for(i=0; i<len; ++i) {
+		        var strpos = rand(0, 3);
+		        pw += text[strpos].charAt(rand(0, text[strpos].length));
+	        }
+	        $("#xs").val(pw);
+        }
+        
+        function viewinfo() {
+	       	var username =  $("#username").val();
+	       	var password =  $("#xs").val();
+	       	if(username == ""){
+	       		layer.tips("请先输入用户名", '#username', {tips: [3,'#4c4c4c'],tipsMore: true});
+	       		$('.layui-layer-tips .layui-layer-content').css({'color':'#ff1e22'});
+	       		return;
+	       	}
+	       	if(password == ""){
+	       		layer.tips("请先输入密码", '#xs', {tips: [3,'#4c4c4c'],tipsMore: true});
+	       		$('.layui-layer-tips .layui-layer-content').css({'color':'#ff1e22'});
+	       		return;
+	       	}
+	       	
+	       	$("#info_dialog").val("用户名：" + username + "\n" + "密码：" + password);
+    		$('#may1st-address-modal-bg').fadeIn();
+			var win_width = $(window).width();
+			var win_height = $(window).height();
+			var position_top = (win_height - $('#may1st-address-modal').height())/2;
+			var position_left = (win_width - $('#may1st-address-modal').width())/2;
+			$('#may1st-address-modal').css({'top':position_top+'px','left':position_left+'px'}).fadeIn();
+			return;
+        }
+    </script>
+</body>
+</html>

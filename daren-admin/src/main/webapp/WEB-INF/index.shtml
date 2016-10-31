@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>首页</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<#include "/common.shtml" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+</head>
+<body>
+	
+	<!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+	<!-- sidebar -->
+	<#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+	<div class="content">
+		<div class="container-fluid">
+           <div id="pad-wrapper" class="table-wrapper users-list">
+           		首页
+			</div>
+		</div>
+	</div>
+	<!-- end main container -->
+	<link rel="stylesheet" href="${rc.contextPath}/js/layui/css/layui.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="${rc.contextPath}/js/layui/layui.js"></script>
+	<script type="text/javascript">
+	layui.use('layim', function(layim){
+		layim.config({
+			brief: false,
+			copyright: true,
+			title: '聊天室',
+			//初始化接口
+		    init: {
+				url: '${rc.contextPath}/im/init.htm',
+				data: {}
+		    },
+		    //查看群员接口
+		    members: {
+				url: '${rc.contextPath}/js/layui/getMembers.json',
+				data: {}
+		    }
+		});
+	});
+	</script>
+</body>
+</html>

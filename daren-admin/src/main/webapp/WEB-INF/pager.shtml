@@ -1,0 +1,28 @@
+<div class="pagination pull-right">
+    <ul>
+        <#if pager.isFirstPage == 0><li><a href="javascript:_gotoPage('1');">&#8249;</a></li></#if>
+        <#list pager.navigatePageNumbers as num>
+			<#if num == pager.pageNumber>
+	        <li><a class="active" href="javascript:void(0);">${num}</a></li>
+	        <#else>
+	        <li><a href="javascript:_gotoPage('${num}');">${num}</a></li>
+	        </#if>
+		</#list>
+        <#if pager.isLastPage == 0><li><a href="javascript:_gotoPage('${pager.pages}');">&#8250;</a></li></#if>
+    </ul>
+    <ul>
+    	<li>共${pager.total}条</li>
+    </ul>
+</div>
+<script type="text/javascript">
+function _gotoPage(pageNo) {
+	try{
+		var tableForm = document.getElementById("searchForm");
+		$("input[name=pageIndex]").val(pageNo);
+		tableForm.onsubmit=null;
+		tableForm.submit();
+	} catch(e) {
+		alert('_gotoPage(pageNo)方法出错');
+	}
+}
+</script>

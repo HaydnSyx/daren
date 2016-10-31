@@ -1,0 +1,161 @@
+﻿**************************************2016/10/14***********************************************************************
+
+INSERT INTO `taobao`.`tb_func` (`MODULE_ID`, `NAME`, `URL`, `CREATE_TIME`) VALUES ('11', '�޸��Ǽ�', '/work/record/editStar.htm', '2016-10-14 11:21:47');
+INSERT INTO `taobao`.`tb_func` (`MODULE_ID`, `NAME`, `URL`, `CREATE_TIME`) VALUES ('11', '�鿴��ע', '/work/record/viewremark', '2016-10-14 12:57:26');
+
+**************************************2016/10/17***********************************************************************
+
+DROP TABLE IF EXISTS `tb_work_task`;
+CREATE TABLE `tb_work_task` (
+  `ID` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `M_ID` int(8) unsigned NOT NULL,
+  `S_DATE` date NOT NULL,
+  `WEB_TYPE` int(1) unsigned NOT NULL,
+  `PRODUCT_TYPE` int(2) unsigned NOT NULL,
+  `STATUS` int(2) unsigned NOT NULL,
+  `SETTLE_STATUS` int(1) unsigned NOT NULL,
+  `ENTER_STATUS` int(1) unsigned NOT NULL,
+  `LEVEL` int(1) unsigned DEFAULT NULL,
+  `REMARK` text,
+  `CREATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UPDATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  KEY `tb_work_task_ibfk_1` (`M_ID`),
+  CONSTRAINT `tb_work_task_ibfk_1` FOREIGN KEY (`M_ID`) REFERENCES `tb_muser` (`M_ID`) ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `tb_attachment`;
+CREATE TABLE `tb_attachment` (
+  `ID` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `TASK_ID` int(8) unsigned NOT NULL,
+  `WEB_TYPE` int(2) unsigned DEFAULT NULL,
+  `PRODUCT_TYPE` int(2) unsigned DEFAULT NULL,
+  `ATTACHMENT_ORIGINNAME` varchar(255) DEFAULT NULL,
+  `ATTACHMENT_SERVERNAME` varchar(255) DEFAULT NULL,
+  `ATTACHMENT_SIZE` int(10) unsigned DEFAULT NULL,
+  `ATTACHMENT_URL` varchar(500) DEFAULT NULL,
+  `CREATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+**************************************2016/10/18***********************************************************************
+DROP TABLE IF EXISTS `tb_properties`;
+CREATE TABLE `tb_properties` (
+  `ID` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `PROP_KEY` varchar(32) NOT NULL,
+  `PROP_VALUE` text,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `UNQ_PROP_KEY` (`PROP_KEY`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tb_properties
+-- ----------------------------
+INSERT INTO `tb_properties` VALUES ('1', 'website', 'http://haydnsyx.hk1.ngrok.cc/taobao-admin');
+INSERT INTO `tb_properties` VALUES ('2', 'file_path', '/upload/file');
+INSERT INTO `tb_properties` VALUES ('3', 'ueditor_file_path', '/upload/ueditor/file');
+INSERT INTO `tb_properties` VALUES ('4', 'ueditor_img_path', '/upload/ueditor/img');
+INSERT INTO `tb_properties` VALUES ('5', 'website_test', 'http://localhost:8080/taobao-admin');
+INSERT INTO `tb_properties` VALUES ('6', 'file_path_test', '/upload/test/file');
+INSERT INTO `tb_properties` VALUES ('7', 'ueditor_file_path_test', '/upload/test/ueditor/file');
+INSERT INTO `tb_properties` VALUES ('8', 'ueditor_img_path_test', '/upload/test/ueditor/img');
+
+**************************************2016/10/23***********************************************************************
+
+DROP TABLE IF EXISTS `tb_audit`;
+CREATE TABLE `tb_audit` (
+  `ID` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `M_ID` int(8) unsigned NOT NULL,
+  `TASK_ID` int(8) unsigned NOT NULL,
+  `STATUS` int(2) unsigned NOT NULL,
+  `REMARK` varchar(500) DEFAULT NULL,
+  `CREATE_TIME` datetime NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for tb_work_record
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_work_record`;
+CREATE TABLE `tb_work_record` (
+  `ID` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `M_ID` int(8) unsigned NOT NULL,
+  `S_DATE` date NOT NULL,
+  `TB_SINGLEPRODUCT_NUM` int(4) unsigned DEFAULT NULL,
+  `TB_SINGLEPRODUCT_AMOUNT` decimal(8,2) DEFAULT NULL,
+  `TB_DETAILLIST_NUM` int(4) unsigned DEFAULT NULL,
+  `TB_DETAILLIST_AMOUNT` decimal(8,2) DEFAULT NULL,
+  `TB_CARD_NUM` int(4) unsigned DEFAULT NULL,
+  `TB_CARD_AMOUNT` decimal(8,2) DEFAULT NULL,
+  `TM_SINGLEPRODUCT_NUM` int(4) unsigned DEFAULT NULL,
+  `TM_SINGLEPRODUCT_AMOUNT` decimal(8,2) DEFAULT NULL,
+  `TM_DETAILLIST_NUM` int(4) unsigned DEFAULT NULL,
+  `TM_DETAILLIST_AMOUNT` decimal(8,2) DEFAULT NULL,
+  `TM_CARD_NUM` int(4) unsigned DEFAULT NULL,
+  `TM_CARD_AMOUNT` decimal(8,2) DEFAULT NULL,
+  `LEVEL` int(2) DEFAULT NULL,
+  `REMARK` text,
+  `CREATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `UNQ_FPAL_MID_DATE` (`M_ID`,`S_DATE`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('website', 'http://haydnsyx.hk1.ngrok.cc/taobao-admin');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('website_test', 'http://localhost:8080/taobao-admin');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ueditor_server_real_path', 'F:/apacheUpload');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ueditor_server_website_test', 'http://localhost');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('file_path', '/taobao-admin');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('file_img_path', '/img');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('file_text_path', '/text');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('file_common_path', '/common');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ftp_server_website_test', 'ftp://localhost');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ftp_server_real_path', 'F:/upload');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ftp_server_addr', '127.0.0.1');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ftp_server_port', '21');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ftp_server_username', 'haydnsyx');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('ftp_server_password', 'sun82293234');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('file_singleproduct_path', '/singleproduct');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('file_detaillist_path', '/detaillist');
+INSERT INTO `taobao`.`tb_properties` (`ID`, `PROP_KEY`, `PROP_VALUE`) VALUES ('file_card_path', '/card');
+
+
+****************************************2016/10/27***************************************************
+
+DROP TABLE IF EXISTS `tb_im_friend_group`;
+CREATE TABLE `tb_im_friend_group` (
+  `ID` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `M_ID` int(8) unsigned NOT NULL,
+  `GROUPNAME` varchar(100) NOT NULL,
+  `ONLINE` int(4) unsigned NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for tb_im_friend_group_mem
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_im_friend_group_mem`;
+CREATE TABLE `tb_im_friend_group_mem` (
+  `ID` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `GROUP_ID` int(8) unsigned NOT NULL,
+  `USERNAME` varchar(50) NOT NULL,
+  `AVATAR` varchar(500) DEFAULT NULL,
+  `SIGN` varchar(500) DEFAULT NULL,
+  `STATUS` int(1) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `GROUP_ID` (`GROUP_ID`),
+  CONSTRAINT `tb_im_friend_group_mem_ibfk_1` FOREIGN KEY (`GROUP_ID`) REFERENCES `tb_im_friend_group` (`ID`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for tb_im_group
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_im_group`;
+CREATE TABLE `tb_im_group` (
+  `ID` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `M_ID` int(8) unsigned NOT NULL,
+  `GROUPNAME` varchar(100) NOT NULL,
+  `AVATAR` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

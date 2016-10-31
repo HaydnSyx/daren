@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>更新<#if (task.webType == 1)>淘宝<#elseif (task.webType == 2)>天猫</#if>帖子</title>
+    
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+	
+	<#include "/commonForAttachment.shtml" />
+    <link rel="stylesheet" href="${rc.contextPath}/css/compiled/new-user.css" type="text/css" media="screen" />
+    <style type="text/css">@import url(${rc.contextPath}/js/plupload/jquery.ui.plupload/css/jquery.ui.plupload.css);</style>
+	<link rel="stylesheet" href="${rc.contextPath}/js/jquery-ui/jquery-ui.css"/>
+</head>
+<body>
+
+        <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+	<!-- main container -->
+    <div class="content">
+        
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="new-user">
+                <div class="row-fluid header">
+                    <h3>更新<#if (task.webType == 1)>淘宝<#elseif (task.webType == 2)>天猫</#if>帖子</h3>
+                </div>
+
+                <div class="row-fluid form-wrapper">
+                    <!-- left column -->
+                    <div class="span9 with-sidebar">
+                        <div class="container">
+                            <form id="customForm" class="new_user_form inline-input" action="${rc.contextPath}/work/task/update.htm" method="post" >
+                            	<input type="hidden" name="taskId" value="${pc.taskId!0}"/>
+                                <div class="span12 field-box">
+                                    <label>标题:</label>
+                                    <input id="title" class="span9" type="text" name="title" value="${pc.title!''}" oninput="checkTextLength(this,44)"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>副标题:</label>
+                                    <input id="subTitle" class="span9" type="text" name="subTitle" value="${pc.subTitle!''}" oninput="checkTextLength(this,40)"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>内容:</label>
+                                    <textarea id="content" class="span9" name="content">${pc.content!''}</textarea>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>标签:</label>
+                                    <input id="tag" class="span9" type="text" name="tag" value="${pc.tag!''}"/>
+                                </div>
+                                <div class="span12 field-box">
+                                    <label>备注:</label>
+                                    <textarea id="remark" rows="5" cols="" class="span9" style="resize: none;" name="remark">${task.remark!''}</textarea>
+                                </div>
+                                <div class="field-box">
+                                	<label>新附件:</label>
+	                                <div id="uploader" class="span9">
+	                                </div>
+	                            </div>
+	                            <#if (attachmentList?? && attachmentList?size gt 0)>
+	                            <div class="span12 field-box">
+                                    <label>原附件:</label>
+                                    <table class="span9" id="origin_table">
+                                    	<#list attachmentList as al>
+                                    	<tr id="tr_${al.id}" style="width: 100%;">
+                                    		<td style="width: 80%;"><a href="javascript:downFile('${al.id}');" style="text-decoration:none;">${al.attachmentOriginname!''}</a></td>
+                                    		<td style="width: 20%;"><a href="javascript:deleteFile('${al.id}');" style="text-decoration:none;">删除</a></td>
+                                    		<td><input type="hidden" value="${al.id}"  name="attachmentId"/></td>
+                                    	</tr>
+                                    	</#list>
+                                    </table>
+                                </div>
+	                            </#if>
+	                            <div id="file_div"></div>
+                             	<div class="span11 field-box actions">
+                                    <input type="submit" class="btn-glow primary" value="保存" />
+                                    <span>OR</span>
+                                    <input type="reset" value="重置" class="reset" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="span3 form-sidebar pull-right">
+                        <div class="alert alert-info hidden-tablet">
+                            <i class="icon-lightbulb pull-left"></i>
+                           至少保证内容或者附件二者完成其一
+                        </div>
+                        <h6>附件不能超过10MB</h6>
+                        <h6>附件目前只支持一下格式：</h6>
+                        <p>图片文件：<b>.jpg .jpeg .png .gif</b></p>
+                        <p>压缩文件：<b>.zip .rar .7z</b></p>
+                        <p>文本文件：<b>.txt</b></p>
+                        <p>doc文件：<b>.doc .docx</b></p>
+                        <p>execl文件：<b>.xls .xlsx</b></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="fileForm" action="${rc.contextPath}/filedown.htm">
+    	<input id="fileForm_attachmentId" name="originAttachmentId" value=""/>
+    </form>
+    <!-- end main container -->
+	<script src="${rc.contextPath}/js/jquery.form.js" type="text/javascript"></script>
+    <!-- 配置文件 -->
+	<script type="text/javascript" src="${rc.contextPath }/js/ueditor/ueditor.config.js"></script>
+	<!-- 编辑器源码文件 -->
+	<script type="text/javascript" src="${rc.contextPath }/js/ueditor/ueditor.all.js"></script>
+	
+	<script type="text/javascript" src="${rc.contextPath}/js/jquery-ui/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="${rc.contextPath}/js/browserplus-min.js"></script>
+	<script type="text/javascript" src="${rc.contextPath}/js/plupload/plupload.full.min.js"></script>
+	<script type="text/javascript" src="${rc.contextPath}/js/plupload/i18n/zh_CN.js"></script>
+	<script type="text/javascript" src="${rc.contextPath}/js/plupload/jquery.ui.plupload/jquery.ui.plupload.js"></script>
+    <script type="text/javascript">
+	    var ue = UE.getEditor('content',{
+	    	zIndex:1000,
+	    	initialFrameHeight:800,
+	    	initialFrameWidth:600
+	    });
+    
+        $(function () {
+            // toggle form between inline and normal inputs
+            var $buttons = $(".toggle-inputs button");
+            var $form = $("form.new_user_form");
+
+            $buttons.click(function () {
+                var mode = $(this).data("input");
+                $buttons.removeClass("active");
+                $(this).addClass("active");
+
+                if (mode === "inline") {
+                    $form.addClass("inline-input");
+                } else {
+                    $form.removeClass("inline-input");
+                }
+            });
+            
+            var up = $("#uploader").plupload({
+        		// General settings
+        		runtimes : 'html5,flash,silverlight,html4',
+        		url : "${rc.contextPath}/fileup.htm",
+        		multipart_params: {
+             		  targetType: 'ftp',
+             		  productType : '3'
+             	},
+        		chunk_size: '1mb',// 分片文件大小
+        		filters : {
+        			max_file_size : '30mb',// 最大文件大小
+        			max_file_count : 1,
+        			mime_types : [
+ 		        		{title : "图片文件", extensions : "jpg,jpeg,gif,png"},
+ 		        		{title : "压缩文件", extensions : "zip,rar,7z"},
+ 		        		{title : "文本文件", extensions : "txt"},
+ 		        		{title : "doc文件", extensions : "doc,docx"},
+ 		        		{title : "excel文件", extensions : "xls,xlsx"}
+ 		        	],
+ 		        	prevent_duplicates : true
+        		},
+        		rename: true,// 重命名
+        		sortable: true,// 排序
+        		dragdrop: true,// 可拖动
+        		flash_swf_url : '${rc.contextPath}/js/plupload/Moxie.swf',
+        		silverlight_xap_url : '${rc.contextPath}/js/plupload/Moxie.xap',
+        		error : function(uploader,errObject){
+        			console.info(errObject);
+        		},
+        		started : function(uploader){
+        			var trLength = $("#origin_table tr").length;
+        			if(trLength > 0){
+        				layer.msg("已经存在一个附件，请先删除原附件再上传！", {icon: 2});
+        				$("#uploader").plupload('stop');
+        			}
+        		},
+        		uploaded : function(uploader,file,status){
+       				var result = file.result;
+       				if(result.status == 200){
+        				var o = eval("(" + result.response + ")");
+        				$("#file_div").append('<div id="' + file.file.id
+        						+ '"><input type="hidden" value="' + o.url
+        						+ '" name="url" /><input type="hidden" value="' + o.uploadFileName
+        						+ '" name="serverName" /><input type="hidden" value="' + o.originFileName
+        						+ '" name="originName" /><input type="hidden" value="' + o.fileSize
+        						+ '" name="fileSize" /></div>');
+        			}
+        		},
+        		removed : function(uploader,files){
+        			$("div#" + files.files[0].id).remove();
+        		},
+        		complete : function(uploader,files){
+        			layer.msg("已经全部上传成功！", {icon: 1});
+        		}
+        	});
+            
+            $("#customForm").validate({
+        		onkeyup:false,
+        		errorPlacement:function(error,element){
+        			if(error[0].innerText != ""){
+                		layer.tips(error[0].innerText, '#'+element.context.id, {tips: [3,'#4c4c4c'],tipsMore: true});
+                		$('.layui-layer-tips .layui-layer-content').css({'color':'#ff1e22'});
+                	}
+        	    },
+        		submitHandler: function(form) {
+        			var content = ue.getContent();
+        			var fileLength = $("#file_div").children("div").length;
+        			var trLength = $("#origin_table tr").length;
+    				if(content == "" && (fileLength == 0) && (trLength == null || trLength == undefined ||trLength == 0)){
+    					layer.msg("请至少保证完成内容或者上传相关的附件其中之一", {icon: 2});
+    				}else{
+    					var index = layer.load(2);
+            			$("#customForm").ajaxSubmit(function(data){
+            				layer.close(index);
+    	            		if(data.status == 1) {
+    	            			window.location.replace("${rc.contextPath}/work/task/list.htm");
+    	            			return;
+    	            		}else{
+    	            			layer.msg(data.message, {icon: 2});
+    	            		}
+            			});
+    				}
+        		} ,
+        		rules: {	
+        		},
+        		messages: {
+        		}
+        	});
+        });
+        
+        var item = $("#sidebar-nav #dashboard-menu li[item=work]");
+        item.addClass("active");
+        item.children(".submenu").show();
+        item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+        
+        function downFile(id){
+        	$("#fileForm_attachmentId").val(id);
+        	$("#fileForm").submit();
+        }
+        
+        function deleteFile(id){
+        	layer.confirm('确定要删除该附件吗?', {icon: 3, title:'提示'}, function(index){
+        		$("tr#tr_" + id).remove();
+        		layer.closeAll();
+      		});
+        }
+    </script>
+</body>
+</html>

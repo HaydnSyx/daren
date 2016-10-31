@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>功能列表</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<#include "/common.shtml" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+</head>
+<body>
+
+    <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+
+    <div class="content">
+        
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="table-wrapper users-list">
+                <div class="row-fluid header">
+                    <h3>模块</h3>
+                </div>
+
+<#macro buildNode data level> 
+    <#if data?? && data?size gt 0> 
+        <#list data as t> 
+            <tr class="first">
+                <td>
+					<#if t.funcs?? && t.funcs?size gt 0>
+					<div style="margin-left: ${(level-1) * 50}px">
+					<table>
+						<tr>
+							<td align="left"><span style="width: 110px;display: block;float: left;">${t.name!''}</span>
+								<#if t.chlids?? && t.chlids?size gt 0><#else><a href="${rc.contextPath}/func/add.htm?moduleId=${t.id}" class="pn-opt" style="margin-right: 20px">添加功能</a></#if>
+							</td>
+							<td align="left">
+							<table class="pn-ltable" style="width:600px" cellspacing="1" cellpadding="0" border="0">
+								<tbody class="pn-ltbody">
+								<#list t.funcs as f>
+									<tr bgcolor="#dbedf4">
+									<td align="left" style="width:100px;">${f.name!''}</td>
+									<td align="left" style="width:400px;word-break: break-all;">${f.url!''}</td>
+									<td style="width:100px;"><a href="${rc.contextPath}/func/update.htm?id=${f.id}" class="pn-opt">更新</a> | <a href="${rc.contextPath}/func/delete.htm?ids=${f.id}" class="pn-opt">删除</a></td>
+									</tr>
+								</#list>
+								</tbody>
+							</table>
+							</td>
+						</tr>
+					</table>
+					</div>
+					<#else>
+						<span style="margin-left: ${(level-1) * 50}px;width: 110px;display: block;float: left;">${t.name!''}</span>
+						<#if t.chlids?? && t.chlids?size gt 0><#else><a href="${rc.contextPath}/func/add.htm?moduleId=${t.id}" class="pn-opt">添加功能</a></#if>
+					</#if>
+				</td>
+
+			</tr>
+			<#if t.chlids?? && t.chlids?size gt 0>
+				<#assign nlevel =(level + 1)/> 
+            	<@buildNode data=t.chlids level=nlevel /> 
+            </#if>
+        </#list> 
+    </#if> 
+</#macro>
+
+
+
+                <!-- Users table -->
+                <div class="row-fluid table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="span4 sortable">
+                                    模块名称
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!-- row -->
+                        <@buildNode data=list level=1/>
+                        <!-- row -->
+                        
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end users table -->
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->	
+    
+    
+<script type="text/javascript">
+var item = $("#sidebar-nav #dashboard-menu li[item=perm]");
+item.addClass("active");
+item.children(".submenu").show();
+item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>查看<#if (task.webType == 1)>淘宝<#elseif (task.webType == 2)>天猫</#if>帖子</title>
+    
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+	
+	<#include "/commonForAttachment.shtml" />
+    <link rel="stylesheet" href="${rc.contextPath}/css/compiled/new-user.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="${rc.contextPath}/js/layui/css/layui.css" type="text/css" media="screen" />
+    <style type="text/css">
+    ul.actions li {
+    	display: inline;
+    }
+    </style>
+</head>
+<body>
+
+        <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+	<!-- main container -->
+    <div class="content">
+        
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="new-user">
+                <div class="row-fluid header">
+                    <h3>查看<#if (task.webType == 1)>淘宝<#elseif (task.webType == 2)>天猫</#if>帖子</h3>
+                </div>
+
+                <div class="row-fluid form-wrapper">
+                    <!-- left column -->
+                    <div class="span9 with-sidebar">
+                        <div class="container">
+                               <div class="span12 field-box">
+                                   <label>标题:</label>
+                                   <input id="title" class="span9" type="text" name="title" value="${pc.title!''}" oninput="checkTextLength(this,44)" readonly="readonly"/>
+                               </div>
+                               <div class="span12 field-box">
+                                   <label>副标题:</label>
+                                   <input id="subTitle" class="span9" type="text" name="subTitle" value="${pc.subTitle!''}" oninput="checkTextLength(this,40)" readonly="readonly"/>
+                               </div>
+                               <div class="span12 field-box">
+                                   <label>内容:</label>
+                                   <textarea id="content" class="span9" name="content">${pc.content!''}</textarea>
+                               </div>
+                               <div class="span12 field-box">
+                                   <label>标签:</label>
+                                   <input id="tag" class="span9" type="text" name="tag" value="${pc.tag!''}" readonly="readonly"/>
+                               </div>
+                               <div class="span12 field-box">
+                                   <label>备注:</label>
+                                   <textarea id="remark" rows="5" cols="" class="span9" style="resize: none;" name="remark" readonly="readonly">${task.remark!''}</textarea>
+                               </div>
+                            <#if (attachmentList?? && attachmentList?size gt 0)>
+                            <div class="span12 field-box">
+                                   <label>原附件:</label>
+                                   <table class="span9" id="origin_table">
+                                   	<#list attachmentList as al>
+                                   	<tr id="tr_${al.id}" style="width: 100%;">
+                                   		<td style="width: 80%;"><a href="javascript:downFile('${al.id}');" style="text-decoration:none;">${al.attachmentOriginname!''}</a></td>
+                                   		<td><input type="hidden" value="${al.id}"  name="attachmentId"/></td>
+                                   	</tr>
+                                   	</#list>
+                                   </table>
+                               </div>
+                            </#if>
+                            <div class="span11 field-box actions">
+                                <input type="button" class="btn-glow primary" value="返回" onclick="returnlist()" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span3 form-sidebar pull-right">
+                        <div class="alert alert-info hidden-tablet">
+                           <h3>状态：
+							<#if task.status == 1 >草稿
+							<#elseif task.status == 2 >已提交
+							<#elseif task.status == 3 ><font color="red">审核驳回</font>
+							<#elseif task.status == 4 >审核通过
+							</#if>                           
+                           </h3>
+                        </div>
+                        <#if task.status == 1 >
+                        <ul class="actions">
+                        	<li class="last"><a href="${rc.contextPath}/work/task/update.htm?id=${task.id}" style="text-decoration:none;" class="layui-btn layui-btn-primary">修改</a></li>
+                        	<li class="last"><a href="javascript:audit('${task.id}','1','2');" style="text-decoration:none;" class="layui-btn layui-btn-normal">提交</a></li>
+                        </ul>
+						<#elseif task.status == 2 >
+						<ul class="actions">
+							<#if (muser?? && muser.role.id !=3)>
+							<li class="last"><a href="javascript:audit('${task.id}','1','3');" style="text-decoration:none;" class="layui-btn">审核</a></li>
+							</#if>
+                        	<li class="last"><a href="javascript:auditRecord('${task.id}');" style="text-decoration:none;" class="layui-btn layui-btn-warm">审核记录</a></li>
+                        </ul>
+						<#elseif task.status == 3 >
+						<ul class="actions">
+							<li class="last"><a href="${rc.contextPath}/work/task/update.htm?id=${task.id}" style="text-decoration:none;" class="layui-btn layui-btn-primary">修改</a></li>
+                        	<li class="last"><a href="javascript:audit('${task.id}','1','2');" style="text-decoration:none;" class="layui-btn layui-btn-normal">提交</a></li>
+                        	<li class="last"><a href="javascript:auditRecord('${task.id}');" style="text-decoration:none;" class="layui-btn layui-btn-warm">审核记录</a></li>
+                        </ul>
+						<#elseif task.status == 4 >
+						<ul class="actions">
+                        	<li class="last"><a href="javascript:auditRecord('${task.id}');" style="text-decoration:none;" class="layui-btn layui-btn-warm">审核记录</a></li>
+                        </ul>
+						</#if>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="fileForm" action="${rc.contextPath}/filedown.htm">
+    	<input id="fileForm_attachmentId" name="originAttachmentId" value=""/>
+    </form>
+    <!-- end main container -->
+	<script src="${rc.contextPath}/js/jquery.form.js" type="text/javascript"></script>
+    <!-- 配置文件 -->
+	<script type="text/javascript" src="${rc.contextPath }/js/ueditor/ueditor.config.js"></script>
+	<!-- 编辑器源码文件 -->
+	<script type="text/javascript" src="${rc.contextPath }/js/ueditor/ueditor.all.js"></script>
+    <script type="text/javascript">
+	    var ue = UE.getEditor('content',{
+	    	zIndex:1000,
+	    	initialFrameHeight:800,
+	    	initialFrameWidth:600
+	    });
+    
+        $(function () {
+            // toggle form between inline and normal inputs
+            var $buttons = $(".toggle-inputs button");
+            var $form = $("form.new_user_form");
+
+            $buttons.click(function () {
+                var mode = $(this).data("input");
+                $buttons.removeClass("active");
+                $(this).addClass("active");
+
+                if (mode === "inline") {
+                    $form.addClass("inline-input");
+                } else {
+                    $form.removeClass("inline-input");
+                }
+            });
+        });
+        
+        var item = $("#sidebar-nav #dashboard-menu li[item=work]");
+        item.addClass("active");
+        item.children(".submenu").show();
+        item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+        
+        function downFile(id){
+        	$("#fileForm_attachmentId").val(id);
+        	$("#fileForm").submit();
+        }
+        
+        function returnlist(){
+        	window.location.replace("${rc.contextPath}/work/task/list.htm");
+        }
+        
+        function audit(taskId, type, status){
+        	if(type == 1){
+        		// 提交
+        		if(status == 2){
+        			layer.confirm("确定要提交这次作业？（提交后不能修改）",{icon:3,title:'提交'},function(index){
+        				$.ajax({
+            				type : "POST",
+            				url : "${rc.contextPath}/work/task/audit.htm",
+            				data : {
+            					taskId : taskId,
+            					type : type,
+            					status : status
+            				},
+            				dataType : "json",
+            				success : function(re) {
+            					if(re.status == 0){
+            						if(re.data == -1){
+            							layer.closeAll();
+            							window.location.replace("${rc.contextPath}/signin.htm");
+            							return;
+            						}else{
+            							layer.msg(re.message, {icon: 2});
+            						}
+            					}else{
+            						layer.alert("提交成功！", {icon: 1}, function(){
+            							layer.closeAll();
+            							window.location.replace("${rc.contextPath}/work/task/view.htm?id=${task.id}");
+            							return;
+            						});
+            					}
+            				}
+            			});
+        			});
+        		}
+        		// 审核
+        		else{
+        			var url = '${rc.contextPath}/work/task/audit.htm';
+                	layer.open({
+                	    type: 2,
+                	    btn : ["确定", "取消"],
+                	    shade: [0.8, '#393D49'], //背景颜色和透明度
+                	    scrollbar: false, //禁止下拉框
+                	    title: "审核", //不显示标题
+                	    area: ['400px', '300px'],
+                	    content: url,
+                	    yes : function(index,l){
+                	    	var data = $(l).find("iframe")[0].contentWindow.getData();
+                	    	if(data != ''){
+                	    		var tipMsg = '';
+                	    		if(data.status == 3){
+                	    			tipMsg = "确定要驳回这次作业吗？（驳回后可以再次修改提交审核）";
+                	    		}else{
+                	    			tipMsg = "确定要通过这次作业吗？（通过后将不能进行修改）";
+                	    		}
+                	    		layer.confirm(tipMsg,{icon:3,title:'审核'},function(index){
+                	    			layer.load(1);
+                    				$.ajax({
+                        				type : "POST",
+                        				url : "${rc.contextPath}/work/task/audit.htm",
+                        				data : {
+                        					taskId : taskId,
+                        					type : type,
+                        					status : data.status,
+                        					remark : data.remark
+                        				},
+                        				dataType : "json",
+                        				success : function(re) {
+                        					if(re.status == 0){
+                        						if(re.data == -1){
+                        							layer.closeAll();
+                        							window.location.replace("${rc.contextPath}/signin.htm");
+                        							return;
+                        						}else{
+                        							layer.msg(re.message, {icon: 2});
+                        						}
+                        					}else{
+                        						layer.alert("审核成功！", {icon: 1}, function(){
+                        							layer.closeAll();
+                        							window.location.replace("${rc.contextPath}/work/task/view.htm?id=${task.id}");
+                        							return;
+                        						});
+                        					}
+                        				}
+                        			});
+                    			});
+                	    	}
+                	    },
+                	    btn2 : function(index){
+                	    	layer.close(index);
+                	    }
+                	});
+        		}
+        	}
+        }
+        
+        function auditRecord(taskId){
+        	var url = '${rc.contextPath}/work/task/auditRecord.htm?taskId=' + taskId;
+        	layer.open({
+        	    type: 2,
+        	    shade: [0.8, '#393D49'], //背景颜色和透明度
+        	    scrollbar: false, //禁止下拉框
+        	    title: "审核记录", //不显示标题
+        	    area: ['400px', '500px'],
+        	    content: url
+        	});
+        }
+    </script>
+</body>
+</html>

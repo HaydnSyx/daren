@@ -1,0 +1,97 @@
+.hide{
+	display: none;
+}
+#may1st-write-address{
+	font-style: italic;
+	text-decoration:underline;
+	cursor: pointer;
+}
+
+#may1st-address-modal-bg{
+	width: 100%;
+	height: 100%;
+	background: #000;
+	filter: alpha(opacity=60);
+	background: rgba(0,0,0,0.6);
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 999;
+}
+
+#may1st-address-modal{
+	width: 700px;
+	height: 500px;
+	background: #fff;
+	position: fixed;
+	z-index: 1000;
+}
+
+.may1st-address-titlebox{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	background: #F3F3F3;
+	border-bottom: 1px solid #C4C4C4;
+}
+
+.may1st-address-title-left{
+	float: left;
+	margin-left: 8px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.may1st-address-title-right{
+	float: right;
+	margin-right: 8px;
+	cursor: pointer;
+	font-weight: bolder;
+	font-size: 16px;
+}
+
+.may1st-address-contentbox form{
+	margin: 30px 25px 30px 25px;
+	font-size: 14px;
+	color: #999999;
+}
+
+.may1st-address-contentbox form input{
+	margin-bottom: 10px;
+	height: 30px;
+	line-height: 30px;
+	width: 230px;
+	font-size: 16px;
+}
+
+#may1st-address-savebtn{
+	width: 150px;
+}
+
+.may1st-address-stressed{
+	color: #E88F91;
+}
+
+.may1st-getgift-btn-box{
+	margin: 50px auto;
+	width: 280px;
+}
+
+.may1st-getgift-btn{
+	width: 278px;
+	height: 70px;
+	line-height: 70px;
+	background: #FF4B33;
+	color: #fff;
+	font-size: 40px;
+	display: block;
+	text-align: center;
+	border-radius: 5px;
+	box-shadow: 0 -5px 5px #AF061A inset;
+}
+
+.may1st-getgift-btn:hover{
+	background: #AF061A;
+	box-shadow: 0 5px 5px #E13601 inset;
+	text-shadow: 1px 1px;
+}

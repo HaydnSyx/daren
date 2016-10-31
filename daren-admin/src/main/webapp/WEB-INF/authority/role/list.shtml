@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>角色列表</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<#include "/common.shtml" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+</head>
+<body>
+
+    <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+
+    <div class="content">
+        
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="table-wrapper users-list">
+                <div class="row-fluid header">
+                    <h3>角色</h3>
+                    <div class="span10 pull-right">
+						<form action="${rc.contextPath}/role/list.htm" method="post" id="searchForm" >
+							<input name="pageIndex" type="hidden" /> 
+						</form>
+						<@perm url="/role/add.htm"><#if hasPerm>
+                        <a href="${rc.contextPath}/role/add.htm" class="btn-flat success pull-right">
+                            <span>&#43;</span>
+                            添加角色
+                        </a>
+                        </#if></@perm>
+                    </div>
+                </div>
+
+                <!-- Users table -->
+                <div class="row-fluid table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="span4 sortable">
+                                    角色名称
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>创建时间
+                                </th>
+                                <th class="span4 sortable">
+                                    <span class="line"></span>首页地址
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!-- row -->
+                        <#list pager.list as role>
+                        <tr class="first">
+                            <td>
+                                ${role.name!""}
+                            </td>
+                            <td>
+                                ${role.createTime!''}
+                            </td>
+                            <td>
+                                ${role.indexUrl!''}
+                            </td>
+                            <td>
+                            	<ul class="actions">
+                                     <@perm url="/role/addPerm.htm"><#if hasPerm><li class="last"><a href="${rc.contextPath}/role/addPerm.htm?id=${role.id}">授权</a></li></#if></@perm>
+                                     <@perm url="/role/update.htm"><#if hasPerm><li class="last"><a href="${rc.contextPath}/role/update.htm?id=${role.id}">修改</a></li></#if></@perm>
+                                     <@perm url="/role/delete.htm"><#if hasPerm><li class="last"><a onclick="return confirm('确认删除吗');" href="${rc.contextPath}/role/delete.htm?ids=${role.id}">删除</a></li></#if></@perm>
+                                     <@perm url="/role/contactPhone.htm"><#if hasPerm><li class="last"><a href="${rc.contextPath}/role/contactPhone.htm?id=${role.id}">联系人手机号</a></li></#if></@perm>
+                                 </ul>
+                             </td>
+                        </tr>
+                        </#list>
+                        <!-- row -->
+                        
+                        </tbody>
+                    </table>
+                </div>
+                <#include "/pager.shtml"  />
+                <!-- end users table -->
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->	
+    
+    
+<script type="text/javascript">
+var item = $("#sidebar-nav #dashboard-menu li[item=perm]");
+item.addClass("active");
+item.children(".submenu").show();
+item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+</script>
+</body>
+</html>

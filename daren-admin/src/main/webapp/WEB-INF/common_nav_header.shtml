@@ -1,0 +1,24 @@
+	<div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+            <button type="button" class="btn btn-navbar visible-phone" id="menu-toggler">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="brand" href="${rc.contextPath}/index.htm" style="padding: 0px 20px 0px;"></a>
+
+            <ul class="nav pull-right">   
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle hidden-phone" data-toggle="dropdown">
+                        ${mname!'未登录'}
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <@perm url="/muser/editpwd.htm"><#if hasPerm><li><a href="${rc.contextPath}/muser/editpwd.htm">修改密码</a></li></#if></@perm>
+                        <@perm url="/signout.htm"><#if hasPerm><li><a href="${rc.contextPath}/signout.htm">退出</a></li></#if></@perm>
+                    </ul>
+                </li>
+            </ul>            
+        </div>
+    </div>

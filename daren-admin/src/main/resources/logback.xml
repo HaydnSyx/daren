@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    <property name="app_name" value="taobao-admin" />
+    <property name="file_location" value="/taobao/logs/log4j/admin/" />
+    <property name="access_file_location" value="/taobao/logs/log4j/admin/" />
+    <property name="yeepay_file_location" value="/taobao/logs/log4j/admin/" />
+    <property name="pattern" value="[%t]-%p, %d{yyyy-MM-dd HH:mm:ss:SSS}--%c{0}, %msg%n" />  
+    <property name="access_pattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %msg%n" />  
+    <property name="yeepay_pattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %msg%n" />  
+
+    <contextName>${app_name}</contextName>  
+    
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${pattern}</pattern>
+		</encoder>
+	</appender>
+	
+	
+	<appender name="FileAppender" class= "ch.qos.logback.core.rolling.RollingFileAppender">
+		 <append>true</append>
+         <!-- 支持多JVM同时操作同一个日志文件 -->
+         <prudent>true</prudent>
+         <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
+         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+              <fileNamePattern>${file_location}/taobao-admin-%d{yyyy-MM-dd}.log</fileNamePattern>
+              <!-- 如果按天来回滚，则最大保存时间为1天，1天之前的都将被清理掉 -->
+              <maxHistory>3650</maxHistory>
+         </rollingPolicy>
+        
+         <!-- 日志输出格式 -->
+         <layout class="ch.qos.logback.classic.PatternLayout">
+              <Pattern>${pattern}</Pattern>
+         </layout>
+         
+	</appender>
+
+	
+	<appender name="AccessFileAppender" class= "ch.qos.logback.core.rolling.RollingFileAppender">
+		 <append>true</append>
+         <!-- 支持多JVM同时操作同一个日志文件 -->
+         <prudent>true</prudent>
+         <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
+         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+              <fileNamePattern>${access_file_location}/taobao-admin-access-%d{yyyy-MM-dd}.log</fileNamePattern>
+              <!-- 如果按天来回滚，则最大保存时间为1天，1天之前的都将被清理掉 -->
+              <maxHistory>3650</maxHistory>
+         </rollingPolicy>
+        
+         <!-- 日志输出格式 -->
+         <layout class="ch.qos.logback.classic.PatternLayout">
+              <Pattern>${access_pattern}</Pattern>
+         </layout>
+	</appender>
+
+   	<logger name="ch.qos.logback" level="WARN" additivity="false">
+	</logger>
+	
+  	<logger name="java.sql" level="DEBUG" additivity="false">
+	</logger> 
+	
+	<logger name="com.syx.taobao.filter.LoggerFilter" level="INFO" additivity="false">
+		<appender-ref ref="AccessFileAppender" />
+	</logger>
+		
+    <logger name="com.syx.taobao.filter" level="INFO" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FileAppender" />
+	</logger>  
+
+ 	<root>
+		<level value="WARN" />
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FileAppender" />
+	</root>
+</configuration>
+

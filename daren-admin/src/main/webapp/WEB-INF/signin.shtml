@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html class="login-bg">
+<head>
+	<title>后台管理登录</title>
+    
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<#include "/common.shtml" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/signin.css" type="text/css" media="screen" />
+</head>
+<body>
+<div style="display: none;">
+    <div class="bg-switch visible-desktop">
+        <div class="bgs">
+            <a href="#" data-img="landscape.jpg" class="bg active">
+                <img src="${rc.contextPath}/img/bgs/landscape.jpg" />
+            </a>
+        </div>
+    </div>
+</div>
+
+    <div class="row-fluid login-wrapper">
+        <a href="#">
+            <!-- <img class="logo" src="${rc.contextPath}/img/logo-white.png" /> -->
+        </a>
+
+        <div class="span4 box">
+        <form action="${rc.contextPath}/signin.htm" method="post"  id="loginForm" >
+        <input type="hidden" name="password" id="_password"/>
+            <div class="content-wrap">
+                <h6>登录</h6>
+                <input class="span12" type="text" name="username" id="username" placeholder="用户名" />
+                <input class="span12" name="xs_password" type="password" id="xs_password" maxlength="32" placeholder="密码" />
+                <!-- <a class="btn-glow primary login" href="">登录</a> -->
+                <input type="submit" class="btn-glow primary login" value="登录" />
+            </div>
+        </form>
+        </div>
+
+        <!-- <div class="span4 no-account">
+            <p>Don't have an account?</p>
+            <a href="signup.html">Sign up</a>
+        </div> -->
+    </div>
+
+    <!-- pre load bg imgs -->
+    <script src="${rc.contextPath}/js/jquery.form.js" type="text/javascript"></script>
+	<script type="text/javascript" src="${rc.contextPath}/js/md5.js"></script>
+    <script type="text/javascript">
+    
+    	
+        $(function () {
+        	$("#username").focus();
+            // bg switcher
+            var $btns = $(".bg-switch .bg");
+            $btns.click(function (e) {
+                e.preventDefault();
+                $btns.removeClass("active");
+                $(this).addClass("active");
+                var bg = $(this).data("img");
+
+                $("html").css("background-image", "url('${rc.contextPath}/img/bgs/" + bg + "')");
+            });
+            
+            $("#loginForm").validate({
+        		onkeyup:false,
+        		errorPlacement:function(error,element){
+	       			 $(element).attr("placeholder",error.text());
+	       	    },
+        		submitHandler: function(form) {  
+        			login();
+        			return false;
+        		} ,
+        		rules: {	
+        			username: {
+        				required: true 
+        			},
+        			xs_password: {
+        				required: true 
+        			}
+        		},
+        		messages: {
+        			username: "请输入用户名",
+        			xs_password: "请输入密码"
+        		}
+        	});
+            
+            //随机背景
+            try{
+	            var length = $(".bg-switch .bgs a").length;
+	        	var index = Math.floor(Math.random()*length);
+	        	var bg = $(".bg-switch .bgs a")[index];
+	        	$(bg).trigger("click");
+            }catch (e){
+            	
+            }
+        });
+        
+        var login = function() {
+            var password = $("#xs_password").val();
+	   		 if(!password || password.length <=0) {
+	   		 	alert("密码不能为空");
+	   		 	return false;
+	   		 }
+	   		 $("#_password").val(hex_md5(password));
+	   		 $("#xs_password").val("");
+	   		   // 提交表单
+	   		   $("#loginForm").ajaxSubmit(function(data){
+	   		   		if(data.status == 1) {
+	   		   			var indexUrl = data.message;
+	               		window.location.href= "${rc.contextPath}" + indexUrl;
+	               	}else {
+	               		alert(data.message);
+	               	}
+	   		   });
+	    }
+    </script>
+</body>
+</html>

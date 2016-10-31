@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>工作记录列表</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<#include "/common.shtml" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/star.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/remark.css" type="text/css" media="screen" />
+</head>
+<body>
+
+    <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+
+    <div class="content">
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="table-wrapper users-list">
+                <div class="row-fluid header">
+                    <h3>项目</h3>
+                    <@perm url="/work/record/add.htm"><#if hasPerm>
+                    <div class="span10 pull-right">
+                        <a href="${rc.contextPath}/work/record/add.htm" class="btn-flat success pull-right">
+                            <span>&#43;</span>
+                            添加工作记录
+                        </a>
+                    </div>
+                    </#if></@perm>
+                    
+                </div>
+
+                <!-- Users table -->
+                <div class="row-fluid table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                            	<th class="span2 sortable">
+                                    <span class="line"></span>日期
+                                </th>
+                                <th class="span2 sortable">
+                                    <span class="line"></span>职员
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>淘宝单品总量/总价
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>淘宝清单总量/总价
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>淘宝帖子总量/总价
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>天猫单品总量/总价
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>天猫清单总量/总价
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>天猫帖子总量/总价
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>星级评定
+                                </th>
+                                <th class="span2 sortable">
+                                    <span class="line"></span>备注
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>创建时间
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>更新时间
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!-- row -->
+                        <#list pager.list as list>
+                        <tr class="first">
+                            <td>
+                            	${list.sDate?string('yyyy-MM-dd')}
+                            </td>
+                            <td>
+                            	<#if list.mnickname??>${list.mnickname}<#else>${list.mname}</#if>
+                            </td>
+                            <td>
+                            	${list.tbSingleproductNum!'--'}/<#if list.tbSingleproductAmount??>¥${list.tbSingleproductAmount!'0'}<#else>--</#if>
+                            </td>
+                            <td>
+                            	${list.tbDetaillistNum!'--'}/<#if list.tbDetaillistAmount??>¥${list.tbDetaillistAmount!'0'}<#else>--</#if>
+                            </td>
+                            <td>
+                            	${list.tbCardNum!'--'}/<#if list.tbCardAmount??>¥${list.tbCardAmount!'0'}<#else>--</#if>
+                            </td>
+                            <td>
+                            	${list.tmSingleproductNum!'--'}/<#if list.tmSingleproductAmount??>¥${list.tmSingleproductAmount!'0'}<#else>--</#if>
+                            </td>
+                            <td>
+                            	${list.tmDetaillistNum!'--'}/<#if list.tmDetaillistAmount??>¥${list.tmDetaillistAmount!'0'}<#else>--</#if>
+                            </td>
+                            <td>
+                            	${list.tmCardNum!'--'}/<#if list.tmCardAmount??>¥${list.tmCardAmount!'0'}<#else>--</#if>
+                            </td>
+                            <td>
+                            	<ul id="star_ul_${list.id}" class="rating <#if (list.level?? && list.level == 1)>onestar<#elseif (list.level?? && list.level == 2)>twostar<#elseif (list.level?? && list.level == 3)>threestar<#elseif (list.level?? && list.level == 4)>fourstar<#elseif (list.level?? && list.level == 5)>fivestar<#else>nostar</#if>">
+									<li class="one"><a href="javascript:editStar('${rc.contextPath}/work/record/editStar.htm', '${list.id}', 1)" title="1 Star">1</a></li>
+									<li class="two"><a href="javascript:editStar('${rc.contextPath}/work/record/editStar.htm','${list.id}', 2)" title="2 Stars">2</a></li>
+									<li class="three"><a href="javascript:editStar('${rc.contextPath}/work/record/editStar.htm','${list.id}', 3)" title="3 Stars">3</a></li>
+									<li class="four"><a href="javascript:editStar('${rc.contextPath}/work/record/editStar.htm','${list.id}', 4)" title="4 Stars">4</a></li>
+									<li class="five"><a href="javascript:editStar('${rc.contextPath}/work/record/editStar.htm','${list.id}', 5)" title="5 Stars">5</a></li>
+								</ul>
+                            </td>
+                            <td>
+                            	<a href="javascript:viewremark('${list.id}')">备注</a>
+                            </td>
+                            <td>
+                            	${list.createTime?string('yyyy-MM-dd HH:mm:ss')}
+                            </td>
+                            <td>
+                            	${list.updateTime?string('yyyy-MM-dd HH:mm:ss')}
+                            </td>
+                            <td>
+                            	<ul class="actions">
+                                     <@perm url="/work/record/update.htm"><#if hasPerm><li class="last"><a href="${rc.contextPath}/work/record/update.htm?id=${list.id}">修改</a></li></#if></@perm>
+                                     <@perm url="/work/record/delete.htm"><#if hasPerm><li class="last"><a onclick="return confirm('确认删除吗');" href="${rc.contextPath}/work/record/delete.htm?id=${list.id}">删除</a></li></#if></@perm>
+                                 </ul>
+                             </td>
+                        </tr>
+                        </#list>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end users table -->
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->
+    
+    <!-- 隐藏的备注的透明背景 -->
+<div class="hide" id="may1st-address-modal-bg">
+</div>
+<!-- 隐藏的备注填写框 -->
+<div class="hide" id="may1st-address-modal">
+	<div class="may1st-address-titlebox">
+		<div class="may1st-address-title-left">
+			备注
+		</div>
+		<div class="may1st-address-title-right" id="may1st-address-close-btn">
+			X
+		</div>
+	</div>
+    <div class="may1st-address-contentbox">
+    	<textarea id="remark_dialog" style="margin: 0px 0px 10px; height: 458px; width: 685px;resize: none;"></textarea>
+    </div>
+</div>
+    
+    
+<script type="text/javascript">
+var item = $("#sidebar-nav #dashboard-menu li[item=work]");
+item.addClass("active");
+item.children(".submenu").show();
+item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+
+$(function(){
+	//------------ 在备注框 显现时 点击背景使其消失的事件
+	$('#may1st-address-modal-bg').on('click',function(){
+		$('#may1st-address-modal').fadeOut();
+		$('#may1st-address-modal-bg').fadeOut();
+	});
+	//------------ 在备注框 显现时 点击其关闭按钮使其消失的事件
+	$('#may1st-address-close-btn').on('click',function(){
+		$('#may1st-address-modal').fadeOut();
+		$('#may1st-address-modal-bg').fadeOut();
+	});
+});
+
+function viewremark(id){
+	$.ajax({
+		type: "POST",
+        url: "${rc.contextPath}/work/record/viewremark.htm",
+        data: {
+        	id : id
+        },
+        dataType: "json",
+        success: function(data){
+        	if(data.status == 1) {
+        		$("#remark_dialog").val(data.data);
+        		$('#may1st-address-modal-bg').fadeIn();
+				var win_width = $(window).width();
+				var win_height = $(window).height();
+				var position_top = (win_height - $('#may1st-address-modal').height())/2;
+				var position_left = (win_width - $('#may1st-address-modal').width())/2;
+				$('#may1st-address-modal').css({'top':position_top+'px','left':position_left+'px'}).fadeIn();
+    			return;
+    		}else{
+    			layer.msg(data.message, {icon: 2});
+    		}
+        }
+	});
+}
+</script>
+</body>
+</html>

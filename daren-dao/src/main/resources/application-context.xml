@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring   
+  	http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"
+	default-lazy-init="true">
+
+
+	<context:component-scan base-package="com.syx.taobao" />
+	
+	<context:annotation-config />
+
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- Druid Start -->
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+	    <property name="slowSqlMillis" value="10000" />
+	    <property name="logSlowSql" value="true" />
+	    <property name="dbType" value="${druid.dbType}" />
+	</bean>
+
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.jinrong.url}" />
+		<property name="username" value="${jdbc.jinrong.username}" />
+		<property name="password" value="${jdbc.jinrong.password}" />
+ 	    <property name="driverClassName" value="${jdbc.driverClassName}" />
+ 	    
+ 		<!-- 初始化连接数量 -->
+        <property name="initialSize" value="${druid.minIdle}" />
+        <!-- 最大并发连接数 -->
+        <property name="maxActive" value="${druid.maxActive}" />
+        <!-- 最大空闲连接数 -->
+        <!-- <property name="maxIdle" value="${druid.maxIdle}" /> -->
+		<!-- 最大空闲连接数 -->
+        <property name="minIdle" value="${druid.minIdle}" />
+  		<!-- 配置获取连接等待超时的时间 -->     
+        <property name="maxWait" value="${druid.maxWait}" />
+
+
+		<!-- 超过时间限制是否回收 -->
+        <property name="removeAbandoned" value="true" />
+        <property name="logAbandoned" value="${druid.logAbandoned}" />
+		<!-- 超过时间限制多长； -->
+        <property name="removeAbandonedTimeout" value="${druid.removeAbandonedTimeout}" />
+        
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
+        <!-- 用来检测连接是否有效的sql，要求是一个查询语句-->
+        <property name="validationQuery" value="${druid.validationQuery}" />
+     
+        <!-- 申请连接的时候检测 -->
+        <property name="testWhileIdle" value="${druid.testWhileIdle}" />
+        <!-- 申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能 -->
+        <property name="testOnBorrow" value="${druid.testOnBorrow}" />
+        <!-- 归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能  -->
+        <property name="testOnReturn" value="${druid.testOnReturn}" />
+        <!-- 让ConfigFilter解密密码 -->    
+		<property name="connectionProperties" value="config.decrypt=true" />
+ 	    <property name="filters" value="stat,mergeStat,wall,config" />  
+	    <property name="proxyFilters">
+	        <list>
+	            <ref bean="stat-filter" />
+	        </list>
+	    </property> 	    
+	</bean>
+	
+	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>com.xunlei.jinrong.service.*</value>
+				<value>com.xunlei.jinrong.dao.*</value>
+				<value>com.xunlei.jinrong.controller.*</value>
+			</list>
+		</property>
+	</bean>
+
+    <!-- proxy-target-class="true" -->
+	<aop:config>
+		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
+	</aop:config>	
+  <!-- Druid End -->
+  
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.syx.taobao.model</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<value>
+				hibernate.current_session_context_class=org.springframework.orm.hibernate3.SpringSessionContext
+				hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+				hibernate.show_sql=false
+				hibernate.format_sql=false
+				hibernate.query.substitutions=true 1, false 0
+				hibernate.jdbc.batch_size=30
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<constructor-arg ref="sessionFactory"></constructor-arg>
+	</bean>
+
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+		lazy-init="true" />
+
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

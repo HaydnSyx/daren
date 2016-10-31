@@ -1,0 +1,62 @@
+	<div id="sidebar-nav">
+        <ul id="dashboard-menu">
+            <li item="home"> 
+                <a href="${rc.contextPath}/index.htm">
+                    <i class="icon-home"></i>
+                    <span>首页</span>
+                </a>
+            </li>
+            <@perm url="/worker.htm"><#if hasPerm>
+            <li item="work">
+                <a class="dropdown-toggle" href="#">
+                    <i class="icon-film"></i>
+                    <span>工作</span>
+                    <i class="icon-chevron-down"></i>
+                </a>
+                <ul class="submenu">
+                	<@perm url="/work/task/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/work/task/list.htm">作业</a></li></#if></@perm>
+                	<@perm url="/work/record/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/work/record/list.htm">工作记录</a></li></#if></@perm>
+                    <@perm url="/product/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/product/list.htm">项目列表</a></li></#if></@perm>
+                </ul>
+            </li>
+            </#if></@perm>
+            <@perm url="/muser.htm"><#if hasPerm>
+            <li item="muser">
+                <a class="dropdown-toggle" href="#">
+                    <i class="icon-edit"></i>
+                    <span>管理员</span>
+                    <i class="icon-chevron-down"></i>
+                </a>
+                <ul class="submenu">
+                    <@perm url="/muser/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/muser/list.htm">管理员列表</a></li></#if></@perm>
+                </ul>
+            </li>
+            </#if></@perm>
+            <@perm url="/authority.htm"><#if hasPerm>
+            <li item="perm">
+                <a class="dropdown-toggle" href="#">
+                    <i class="icon-cog"></i>
+                    <span>权限</span>
+                    <i class="icon-chevron-down"></i>
+                </a>
+                <ul class="submenu">
+                    <@perm url="/module/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/module/list.htm">模块列表</a></li></#if></@perm>
+                    <@perm url="/func/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/func/list.htm">功能列表</a></li></#if></@perm>
+                    <@perm url="/role/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/role/list.htm">角色列表</a></li></#if></@perm>
+                </ul>
+            </li>
+            </#if></@perm>
+            <@perm url="/setting.htm"><#if hasPerm>
+            <li item="setting">
+                <a class="dropdown-toggle" href="#">
+                    <i class="icon-info-sign"></i>
+                    <span>系统设置</span>
+                    <i class="icon-chevron-down"></i>
+                </a>
+                <ul class="submenu">
+                    <@perm url="/setting/properties/list.htm"><#if hasPerm><li><a href="${rc.contextPath}/setting/properties/list.htm">属性列表</a></li></#if></@perm>
+                </ul>
+            </li>
+            </#if></@perm>
+        </ul>
+    </div>

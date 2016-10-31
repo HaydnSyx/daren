@@ -1,0 +1,32 @@
+**************************************2016/10/17***********************************************************************
+工作 作业
+
+查看	/work/task/list.htm	更新 | 删除
+添加帖子	/work/task/add-card.htm	更新 | 删除
+添加	/work/task/add.htm	更新 | 删除
+添加清单	/work/task/add-detaillist.htm	更新 | 删除
+添加单品	/work/task/add-singleproduct.htm	更新 | 删除
+更新	/work/task/update.htm	更新 | 删除
+删除	/work/task/delete.htm	更新 | 删除
+查看备注	/work/task/viewremark.htm	更新 | 删除
+修改星级	/work/task/editStar.htm	更新 | 删除
+
+**************************************2016/10/23***********************************************************************
+
+工作 作业
+
+详情	/work/task/view.htm	更新 | 删除
+审核	/work/task/audit.htm	更新 | 删除
+查看审核记录	/work/task/auditRecord.htm	更新 | 删除
+
+系统设置 属性
+
+查看	/setting/properties/list.htm	更新 | 删除
+添加	/setting/properties/add.htm	更新 | 删除
+更新	/setting/properties/update.htm	更新 | 删除
+删除	/setting/properties/delete.htm	更新 | 删除
+
+系统相关
+
+上传附件	/fileup.htm	更新 | 删除
+下载附件	/filedown.htm	更新 | 删除

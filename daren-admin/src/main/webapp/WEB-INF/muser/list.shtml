@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>管理员列表</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<#include "/common.shtml" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="${rc.contextPath}/css/star.css" type="text/css" media="screen" />
+</head>
+<body>
+
+    <!-- navbar -->
+    <#include "/common_nav_header.shtml" />
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    <#include "/common_nav_left.shtml" />
+    <!-- end sidebar -->
+
+
+    <div class="content">
+        
+        <div class="container-fluid">
+            <div id="pad-wrapper" class="table-wrapper users-list">
+                <div class="row-fluid header">
+                    <h3>管理员</h3>
+                    <div class="span10 pull-right">
+						<form action="${rc.contextPath}/muser/list.htm" method="post" id="searchForm" >
+							<input name="pageIndex" type="hidden" /> 
+						</form>
+						<@perm url="/muser/add.htm"><#if hasPerm>
+                        <a href="${rc.contextPath}/muser/add.htm" class="btn-flat success pull-right">
+                            <span>&#43;</span>
+                            添加管理员
+                        </a>
+                        </#if></@perm>
+                    </div>
+                </div>
+
+                <!-- Users table -->
+                <div class="row-fluid table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="span4 sortable">
+                                    用户名
+                                </th>
+                                <th class="span2 sortable">
+                                    <span class="line"></span>昵称
+                                </th>
+                                <th class="span2 sortable">
+                                    <span class="line"></span>电话
+                                </th>
+                                <th class="span2 sortable">
+                                    <span class="line"></span>邮箱
+                                </th>
+                                <th class="span2 sortable">
+                                    <span class="line"></span>角色
+                                </th>
+                                <th class="span3 sortable">
+                                    <span class="line"></span>创建时间
+                                </th>
+                                <th class="span5 sortable">
+                                    <span class="line"></span>地址
+                                </th>
+                                <th class="span2 sortable>
+                                    <span class="line"></span>星级
+                                </th>
+                                <th class="span3 sortable>
+                                    <span class="line"></span>状态
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!-- row -->
+                        <#list pager.list as user>
+                        <tr class="first">
+                            <td>
+                                <span class="subtext">${user.username!""}</span>
+                            </td>
+                            <td>
+                                ${user.nickname!""}
+                            </td>
+                            <td>
+                                ${user.phone!""}
+                            </td>
+                            <td>
+                                ${user.email!""}
+                            </td>
+                            <td>
+                                ${user.role.name!""}
+                            </td>
+                            <td>
+                                ${user.recDate!''}
+                            </td>
+                            <td>
+                                ${user.address!""}
+                            </td>
+                            <td>
+                            	<ul id="star_ul_${user.id}" class="rating <#if (user.level?? && user.level == 1)>onestar<#elseif (user.level?? && user.level == 2)>twostar<#elseif (user.level?? && user.level == 3)>threestar<#elseif (user.level?? && user.level == 4)>fourstar<#elseif (user.level?? && user.level == 5)>fivestar<#else>nostar</#if>">
+									<li class="one"><a href="javascript:void();" title="1 Star">1</a></li>
+									<li class="two"><a href="javascript:void();" title="2 Stars">2</a></li>
+									<li class="three"><a href="javascript:void();" title="3 Stars">3</a></li>
+									<li class="four"><a href="javascript:void();" title="4 Stars">4</a></li>
+									<li class="five"><a href="javascript:void();" title="5 Stars">5</a></li>
+								</ul>
+                            </td>
+                            <td>
+                            <#if (user.recStatus?? && user.recStatus == 'T')>
+                            	<span class="label label-success">正常</span>
+                            	<ul class="actions">
+                            	<@perm url="/muser/updateStatus.htm"><#if hasPerm><li class="last"><a onclick="return confirm('确认冻结吗');" href="${rc.contextPath}/muser/updateStatus.htm?ids=${user.id}&recStatus=F">冻结</a></li></#if></@perm>
+                            	<@perm url="/muser/update.htm"><#if hasPerm><li class="last"><a  href="${rc.contextPath}/muser/update.htm?id=${user.id}">更新</a></li></#if></@perm>
+                                 </ul>
+                            </#if>
+                            <#if (user.recStatus?? && user.recStatus == 'F')>
+	                            <span class="label">冻结</span>
+	                            <ul class="actions">
+	                            <@perm url="/muser/updateStatus.htm"><#if hasPerm><li class="last"><a href="${rc.contextPath}/muser/updateStatus.htm?ids=${user.id}&recStatus=T">解冻</a></li></#if></@perm>
+                            	<@perm url="/muser/update.htm"><#if hasPerm><li class="last"><a  href="${rc.contextPath}/muser/update.htm?id=${user.id}">更新</a></li></#if></@perm>
+                                 </ul>
+                            </#if>
+                             </td>
+                        </tr>
+                        </#list>
+                        <!-- row -->
+                        
+                        </tbody>
+                    </table>
+                </div>
+                <#include "/pager.shtml"  />
+                <!-- end users table -->
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->	
+    
+    
+<script type="text/javascript">
+var item = $("#sidebar-nav #dashboard-menu li[item=muser]");
+item.addClass("active");
+item.children(".submenu").show();
+item.append("<div class=\"pointer\"><div class=\"arrow\"></div><div class=\"arrow_border\"></div></div>");
+</script>
+</body>
+</html>
