@@ -57,11 +57,9 @@
 			    }
 			});
 			layim.on('sendMessage', function(res){
-				console.info(res);
-				socket.send({
-					type: 'chatMessage', //随便定义，用于在服务端区分消息类型
-					data: '123213'
-				});
+				var msg = JSON.stringify(res);
+				console.info(msg);
+				socket.send(msg);
 			});
 		}else{
 			layer.msg("浏览器对不起浏览器不支持在线聊天系统！",{icon:2});
