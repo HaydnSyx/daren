@@ -28,22 +28,44 @@
 	<link rel="stylesheet" href="${rc.contextPath}/js/layui/css/layui.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="${rc.contextPath}/js/layui/layui.js"></script>
 	<script type="text/javascript">
+	var socket;
+	
 	layui.use('layim', function(layim){
-		layim.config({
-			brief: false,
-			copyright: true,
-			title: '聊天室',
-			//初始化接口
-		    init: {
-				url: '${rc.contextPath}/im/init.htm',
-				data: {}
-		    },
-		    //查看群员接口
-		    members: {
-				url: '${rc.contextPath}/js/layui/getMembers.json',
-				data: {}
-		    }
-		});
+		if (window.WebSocket) {
+			socket = new WebSocket('ws://localhost:8888');
+			socket.onmessage = function(event) {
+				console.info(event);
+				layer.msg("接收到一个新消息：[" + event.data + "]");
+			};
+			socket.onopen = function(event) {
+				layer.msg("连接成功",{icon:1});
+			};
+			socket.onclose = function(event) {
+				layer.msg("连接关闭",{icon:1});				
+			};
+			layim.config({
+				brief: false,
+				copyright: true,
+				title: '聊天室',
+				//初始化接口
+			    init: {
+					url: '${rc.contextPath}/im/init.htm',
+					data: {}
+			    },
+			    //查看群员接口
+			    members: {
+			    }
+			});
+			layim.on('sendMessage', function(res){
+				console.info(res);
+				socket.send({
+					type: 'chatMessage', //随便定义，用于在服务端区分消息类型
+					data: '123213'
+				});
+			});
+		}else{
+			layer.msg("浏览器对不起浏览器不支持在线聊天系统！",{icon:2});
+		}
 	});
 	</script>
 </body>
