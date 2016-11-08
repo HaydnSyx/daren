@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+@SuppressWarnings("restriction")
 public class ImageUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(ImageUtil.class);
