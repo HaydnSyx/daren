@@ -2,6 +2,7 @@ package com.syx.taobao.websocket.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -21,6 +22,9 @@ public class WebSocketServer {
 
 	private Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
 
+	@Autowired
+	private WebSocketServerHandle webSocketServerHandle;
+
 	public void run(int port) {
 		EventLoopGroup boosGroup = new NioEventLoopGroup();
 		EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -33,7 +37,7 @@ public class WebSocketServer {
 					pip.addLast("http-codec", new HttpServerCodec());
 					pip.addLast("aggregator", new HttpObjectAggregator(65536));
 					pip.addLast("http-chunked", new ChunkedWriteHandler());
-					pip.addLast("handler", new WebSocketServerHandle());
+					pip.addLast("handler", webSocketServerHandle);
 				}
 			});
 			Channel ch = b.bind(port).sync().channel();

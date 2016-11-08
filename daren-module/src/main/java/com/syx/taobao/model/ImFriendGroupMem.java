@@ -17,6 +17,9 @@ public class ImFriendGroupMem {
 	@Column(name = "ID")
 	private int id;
 
+	@Column(name = "M_ID")
+	private int mId;
+
 	@Column(name = "USERNAME")
 	private String username;
 
@@ -82,6 +85,14 @@ public class ImFriendGroupMem {
 	}
 
 	public ImFriendGroupMem() {
+	}
+
+	public int getmId() {
+		return mId;
+	}
+
+	public void setmId(int mId) {
+		this.mId = mId;
 	}
 
 	public ImFriendGroupMem(String username, String avatar, String sign, int status, ImFriendGroup imFriendGroup) {

@@ -212,6 +212,19 @@ public class AppConstant {
 	public static final int IM_FRIEND_STATUS_BLACKLIST = 2;
 
 	/**
+	 * 聊天系统发送类型-绑定
+	 */
+	public static final int IM_SEND_TYPE_BIND = 1;
+	/**
+	 * 聊天系统发送类型-一对一（单聊）
+	 */
+	public static final int IM_SEND_TYPE_FRIEND = 2;
+	/**
+	 * 聊天系统发送类型-一对多（群聊）
+	 */
+	public static final int IM_SEND_TYPE_GROUP = 3;
+
+	/**
 	 * 有\没有 <br>
 	 * 0:没有 NONE<br>
 	 * 1:有 HAS<br>

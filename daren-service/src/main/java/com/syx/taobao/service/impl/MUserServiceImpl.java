@@ -131,8 +131,9 @@ public class MUserServiceImpl implements MUserService {
 			ImFriendGroupMem friendGroupMem = null;
 			for (MUser o : list) {
 				friendGroupMem = new ImFriendGroupMem(StringUtil.isNull(o.getNickname()) ? o.getUsername() : o.getNickname(),
-						StringUtil.isNull(o.getAvatar()) ? AppConstant.USER_HEADER_IMG_DEFAULTURL : o.getAvatar(),
-						StringUtil.isNull(o.getSign()) ? "" : o.getSign(), AppConstant.IM_FRIEND_STATUS_OK, friendGroup);
+						StringUtil.isNull(o.getAvatar()) ? AppConstant.USER_HEADER_IMG_DEFAULTURL : o.getAvatar(), StringUtil.isNull(o.getSign()) ? "" : o.getSign(), AppConstant.IM_FRIEND_STATUS_OK,
+						friendGroup);
+				friendGroupMem.setmId(o.getId());
 				imFriendGroupMemDao.addImFriendGroupMem(friendGroupMem);
 
 				// 互添好友
@@ -149,8 +150,9 @@ public class MUserServiceImpl implements MUserService {
 				}
 				// 添加好友信息
 				friendGroupMem = new ImFriendGroupMem(StringUtil.isNull(user.getNickname()) ? user.getUsername() : user.getNickname(),
-						StringUtil.isNull(user.getAvatar()) ? AppConstant.USER_HEADER_IMG_DEFAULTURL : user.getAvatar(),
-						StringUtil.isNull(user.getSign()) ? "" : user.getSign(), AppConstant.IM_FRIEND_STATUS_OK, group);
+						StringUtil.isNull(user.getAvatar()) ? AppConstant.USER_HEADER_IMG_DEFAULTURL : user.getAvatar(), StringUtil.isNull(user.getSign()) ? "" : user.getSign(),
+						AppConstant.IM_FRIEND_STATUS_OK, group);
+				friendGroupMem.setmId(user.getId());
 				imFriendGroupMemDao.addImFriendGroupMem(friendGroupMem);
 				// TODO 发送添加通知
 			}

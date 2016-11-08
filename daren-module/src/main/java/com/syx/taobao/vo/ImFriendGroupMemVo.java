@@ -11,6 +11,8 @@ public class ImFriendGroupMemVo {
 	private String sign;
 
 	private int status;
+	
+	private int mId;
 
 	public int getId() {
 		return id;
@@ -50,5 +52,13 @@ public class ImFriendGroupMemVo {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public int getmId() {
+		return mId;
+	}
+
+	public void setmId(int mId) {
+		this.mId = mId;
 	}
 }

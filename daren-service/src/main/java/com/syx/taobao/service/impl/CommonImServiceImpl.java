@@ -78,6 +78,7 @@ public class CommonImServiceImpl implements CommonImService {
 				for (ImFriendGroupMem imFriendGroupMem : imFriendGroup.getFriendGroupMems()) {
 					imFriendGroupMemVo = new ImFriendGroupMemVo();
 					BeanUtils.copyProperties(imFriendGroupMem, imFriendGroupMemVo);
+					imFriendGroupMemVo.setId(imFriendGroupMemVo.getmId());
 					imFriendGroupMemVoList.add(imFriendGroupMemVo);
 				}
 				imFriendGroupVo.setList(imFriendGroupMemVoList);

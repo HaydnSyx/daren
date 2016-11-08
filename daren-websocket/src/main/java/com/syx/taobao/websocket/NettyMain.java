@@ -9,7 +9,7 @@ public class NettyMain {
 
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
-		ApplicationContext wac = new ClassPathXmlApplicationContext("classpath:application-context.xml");
+		ApplicationContext wac = new ClassPathXmlApplicationContext("classpath*:application-context.xml");
 		WebSocketServer websocket = (WebSocketServer) wac.getBean("webSocketServer");
 		websocket.run(8888);
 	}
