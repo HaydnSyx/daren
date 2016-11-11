@@ -66,4 +66,19 @@ public class ImChannelGroup {
 		}
 		return null;
 	}
+
+	public static boolean vailChannelActive(int userId) {
+		Channel channel = getChannel(getChannelId(userId));
+		return channel == null ? false : channel.isActive();
+	}
+
+	public static boolean vailChannelOpen(int userId) {
+		Channel channel = getChannel(getChannelId(userId));
+		return channel == null ? false : channel.isOpen();
+	}
+
+	public static boolean vailChannelWritable(int userId) {
+		Channel channel = getChannel(getChannelId(userId));
+		return channel == null ? false : channel.isWritable();
+	}
 }

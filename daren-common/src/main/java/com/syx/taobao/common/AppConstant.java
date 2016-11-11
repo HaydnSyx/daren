@@ -64,21 +64,13 @@ public class AppConstant {
 	}
 
 	/**
-	 * 返回状态-失败
+	 * 返回状态-错误
 	 */
 	public static final int RESULT_STATUS_ERROR = 0;
 	/**
 	 * 返回状态-成功
 	 */
 	public static final int RESULT_STATUS_SUCCESS = 1;
-	/**
-	 * 返回状态-未验证
-	 */
-	public static final int RESULT_STATUS_UNVALID = 2;
-	/**
-	 * 返回状态-未登录
-	 */
-	public static final int RESULT_STATUS_NOUSER = 3;
 
 	/**
 	 * 状态-可用
@@ -212,17 +204,29 @@ public class AppConstant {
 	public static final int IM_FRIEND_STATUS_BLACKLIST = 2;
 
 	/**
-	 * 聊天系统发送类型-绑定
+	 * 聊天CODE-连接服务器成功
 	 */
-	public static final int IM_SEND_TYPE_BIND = 1;
+	public static final int IM_CODE_CONNECT_SUCCESS = 1;
 	/**
-	 * 聊天系统发送类型-一对一（单聊）
+	 * 聊天CODE-连接服务器失败
 	 */
-	public static final int IM_SEND_TYPE_FRIEND = 2;
+	public static final int IM_CODE_CONNECT_FAIL = 2;
 	/**
-	 * 聊天系统发送类型-一对多（群聊）
+	 * 聊天CODE-新消息
 	 */
-	public static final int IM_SEND_TYPE_GROUP = 3;
+	public static final int IM_CODE_NOTICE_NEWMSG = 3;
+	/**
+	 * 聊天CODE-上线通知
+	 */
+	public static final int IM_CODE_NOTICE_ONLINE = 4;
+	/**
+	 * 聊天CODE-下线通知
+	 */
+	public static final int IM_CODE_NOTICE_OFFLINE = 5;
+	/**
+	 * 聊天CODE-发送失败
+	 */
+	public static final int IM_CODE_SENDFAILED = 9;
 
 	/**
 	 * 有\没有 <br>

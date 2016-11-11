@@ -1,63 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>首页</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<#include "/common.shtml" />
-	<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+<title>首页</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<#include "/common.shtml" />
+<link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
+<style type="text/css">
+  	.layim-list-gray{-webkit-filter: grayscale(100%);  -ms-filter: grayscale(100%); filter: grayscale(100%);}
+</style>
 </head>
 <body>
-	
+
 	<!-- navbar -->
-    <#include "/common_nav_header.shtml" />
-    <!-- end navbar -->
+	<#include "/common_nav_header.shtml" />
+	<!-- end navbar -->
 
 	<!-- sidebar -->
 	<#include "/common_nav_left.shtml" />
-    <!-- end sidebar -->
+	<!-- end sidebar -->
 
 	<div class="content">
 		<div class="container-fluid">
-           <div id="pad-wrapper" class="table-wrapper users-list">
-           		首页
-			</div>
+			<div id="pad-wrapper" class="table-wrapper users-list">首页</div>
 		</div>
 	</div>
 	<!-- end main container -->
 	<link rel="stylesheet" href="${rc.contextPath}/js/layui/css/layui.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="${rc.contextPath}/js/layui/layui.js"></script>
-	<script type="text/javascript" src="${rc.contextPath}/js/layui/layui.js"></script>
-	<link rel="stylesheet" href="${rc.contextPath}/js/smartmenu/smartMenu.css" type="text/css" media="screen" />
-	<script type="text/javascript" src="${rc.contextPath}/js/smartmenu/smartMenu.js"></script>
 	<script type="text/javascript">
 	var socket;
-	var menuData = [[{
-                        text: "添加好友",
-                        func: function() {
-                        }
-                    }, {
-                        text: "添加群组",
-                        func: function() {
-                        }
-                    }]];
 	layui.use('layim', function(layim){
 		if (window.WebSocket) {
 			socket = new WebSocket('ws://127.0.0.1:8888');
 			socket.onmessage = function(event) {
 				var re = JSON.parse(event.data);
+				// 发送成功
 				if(re.status == 1){
 					var data = re.data;
 					// 连接成功
 					if(data.resultCode == 1){
 						layer.msg("连接服务器成功",{icon:1});
+						var offLineFriends = data.data;
+						for(var i in offLineFriends) {
+							var s = offLineFriends[i];
+							if(!$('#layim-friend'+s).hasClass('layim-list-gray')){
+								console.info($('#layim-friend'+s));
+								$('#layim-friend'+s).addClass('layim-list-gray');
+							}
+						}
+					}
+					// 连接失败
+					if(data.resultCode == 2){
 					}
 					// 接收到好友信息
-					else if(data.resultCode == 2){
-						console.info(data.msg);
+					else if(data.resultCode == 3){
 						layim.getMessage(data.msg);
 					}
-				}else{
+					// 好友上线
+					else if(data.resultCode == 4){
+						if($('#layim-friend'+data.data).hasClass('layim-list-gray')){
+							$('#layim-friend'+data.data).removeClass('layim-list-gray');
+						}
+					}
+					// 好友下线
+					else if(data.resultCode == 5){
+						if(!$('#layim-friend'+data.data).hasClass('layim-list-gray')){
+							$('#layim-friend'+data.data).addClass('layim-list-gray');
+						}
+					}
+					// 发送失败
+					else if(data.resultCode == 9){
+					}
+				}
+				// 错误
+				else{
 					layer.msg(re.message,{icon:2});
 				}
 			};
@@ -81,11 +98,17 @@
 			    },
 			    //查看群员接口
 			    members: {
+			    },
+			    // 上传图片
+			    uploadImage: {
+			    	url: '${rc.contextPath}/im/fileup.htm?type=img'
+			    },
+			 	// 上传附件
+			    uploadFile: {
+			    	url: '${rc.contextPath}/im/fileup.htm?type=file'
 			    }
 			});
 			layim.on('ready', function(options){
-				console.info($($('#layui-layim').parent()[0]).attr("id"));
-				$($('#layui-layim').parent()[0]).smartMenu(menuData);
 			});
 			layim.on('sendMessage', function(res){
 				res.type = res.to.type;

@@ -1,6 +1,8 @@
 package com.syx.taobao.controller.common;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +22,7 @@ import com.syx.taobao.exception.BizException;
 import com.syx.taobao.service.FileUploadDownService;
 import com.syx.taobao.service.PropertiesService;
 import com.syx.taobao.vo.CommentFileUpResult;
+import com.syx.taobao.vo.im.FileUpResultVo;
 
 @Controller
 public abstract class AbstractFileController {
@@ -30,8 +33,7 @@ public abstract class AbstractFileController {
 	@Autowired
 	protected FileUploadDownService fileUploadService;
 
-	public CommentFileUpResult fileup(String filePath, String targetType, Integer productType,
-			MultipartHttpServletRequest request) {
+	public CommentFileUpResult fileup(String filePath, String targetType, Integer productType, MultipartHttpServletRequest request) {
 
 		try {
 			Iterator<String> itr = request.getFileNames();
@@ -61,15 +63,13 @@ public abstract class AbstractFileController {
 				String url = "";
 				if ("ftp".equals(targetType)) {
 					url = fileUploadService.uploadFtp(mpf.getInputStream(), fileName, productType, muserPath, true);
-				} else if("apache".equals(targetType)) {
-					url = fileUploadService.upload(mpf.getInputStream(), fileName, getFileUpUrl(request), rootPath,
-							filePath, true);
+				} else if ("apache".equals(targetType)) {
+					url = fileUploadService.upload(mpf.getInputStream(), fileName, getFileUpUrl(request), rootPath, filePath, true);
 				}
 				String serverFileName = url.substring(url.lastIndexOf("/") + 1);
 				String uploadFileNameWithoutSuff = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
 				String suff = url.substring(url.lastIndexOf("."));
-				CommentFileUpResult res = new CommentFileUpResult(0, "上传成功", url, serverFileName, fileName,
-						uploadFileNameWithoutSuff, suff, fileSize);
+				CommentFileUpResult res = new CommentFileUpResult(0, "上传成功", url, serverFileName, fileName, uploadFileNameWithoutSuff, suff, fileSize);
 				return res;
 			}
 		} catch (Exception e) {
@@ -92,6 +92,44 @@ public abstract class AbstractFileController {
 		return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
 	}
 
+	public FileUpResultVo fileup(String filePath, boolean file, MultipartHttpServletRequest request) {
+		try {
+			Iterator<String> itr = request.getFileNames();
+			MultipartFile mpf = null;
+			if (itr.hasNext()) {
+				mpf = request.getFile(itr.next());
+
+				// 文件保存目录路径
+				String rootPath = getRootPath(request);
+				// 最大文件大小
+				// long maxSize = 8388608;
+				if (!ServletFileUpload.isMultipartContent(request)) {
+					return getImError("请选择文件。");
+				}
+
+				String fileName = mpf.getOriginalFilename();
+				// long fileSize = mpf.getSize();
+				// 检查文件大小
+				/*
+				 * if (fileSize > maxSize) { return getImError("上传文件大小超过限制。"); }
+				 */
+
+				String url = fileUploadService.upload(mpf.getInputStream(), fileName, getFileUpUrl(request), rootPath, filePath, true);
+				Map<String, String> data = new HashMap<>();
+				data.put("src", url);
+				if (file) {
+					data.put("name", fileName);
+				}
+				FileUpResultVo res = new FileUpResultVo(0, "上传成功", data);
+				return res;
+			}
+		} catch (Exception e) {
+			logger.error("img up failure!", e);
+			return getImError("图片上传异常!");
+		}
+		return null;
+	}
+
 	public byte[] filedo(int attachmentId) {
 		try {
 			return fileUploadService.downFtp(attachmentId);
@@ -103,6 +141,11 @@ public abstract class AbstractFileController {
 
 	protected CommentFileUpResult getError(String message) {
 		CommentFileUpResult res = new CommentFileUpResult(1, message);
+		return res;
+	}
+
+	protected FileUpResultVo getImError(String message) {
+		FileUpResultVo res = new FileUpResultVo(1, message, null);
 		return res;
 	}
 

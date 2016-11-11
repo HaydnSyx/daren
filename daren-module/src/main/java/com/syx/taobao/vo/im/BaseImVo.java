@@ -12,6 +12,8 @@ public class BaseImVo {
 
 	private Integer resultCode;
 
+	private Object data;
+
 	public ImMineVo getMine() {
 		return mine;
 	}
@@ -50,5 +52,25 @@ public class BaseImVo {
 
 	public void setMsg(MsgVo msg) {
 		this.msg = msg;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public BaseImVo() {
+	}
+
+	public BaseImVo(Integer resultCode) {
+		this.resultCode = resultCode;
+	}
+
+	public BaseImVo(Integer resultCode, Object data) {
+		this.resultCode = resultCode;
+		this.data = data;
 	}
 }

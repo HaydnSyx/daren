@@ -24,6 +24,7 @@ import com.syx.taobao.service.AttachmentService;
 import com.syx.taobao.service.MUserService;
 import com.syx.taobao.util.StringUtil;
 import com.syx.taobao.vo.CommentFileUpResult;
+import com.syx.taobao.vo.im.FileUpResultVo;
 
 @Controller
 public class FileUploadDownController extends AbstractFileController {
@@ -35,8 +36,7 @@ public class FileUploadDownController extends AbstractFileController {
 
 	@RequestMapping(value = "fileup", produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
-	public CommentFileUpResult fileup(String filePath, String targetType, Integer productType,
-			MultipartHttpServletRequest request, HttpSession session) {
+	public CommentFileUpResult fileup(String filePath, String targetType, Integer productType, MultipartHttpServletRequest request, HttpSession session) {
 		return super.fileup(filePath, targetType, productType, request);
 	}
 
@@ -49,14 +49,27 @@ public class FileUploadDownController extends AbstractFileController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
 			attachment = attachmentService.queryAttachment(attachmentId);
-			String originFileName = StringUtil.isNull(attachment.getAttachmentOriginname()) ? sdf.format(new Date())
-					: attachment.getAttachmentOriginname();
+			String originFileName = StringUtil.isNull(attachment.getAttachmentOriginname()) ? sdf.format(new Date()) : attachment.getAttachmentOriginname();
 			fileName = new String(originFileName.getBytes("UTF-8"), "iso-8859-1");
 			data = super.filedo(attachmentId);
 		} catch (UnsupportedEncodingException | BizException e) {
 			e.printStackTrace();
 		}
 		return super.getDownloadResponseEntity(data, fileName, null);
+	}
+
+	@RequestMapping(value = "im/fileup", produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public FileUpResultVo imfileup(String type, MultipartHttpServletRequest request, HttpSession session) {
+		boolean file = false;
+		String filePath = "/im";
+		if ("img".equals(type)) {
+			filePath = filePath + "/img";
+		} else if ("file".equals(type)) {
+			filePath = filePath + "/file";
+			file = true;
+		}
+		return super.fileup(filePath, file, request);
 	}
 
 	/**
