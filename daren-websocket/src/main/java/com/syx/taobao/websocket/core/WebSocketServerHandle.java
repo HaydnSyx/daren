@@ -16,6 +16,7 @@ import com.syx.taobao.service.ImCommonService;
 import com.syx.taobao.util.JsonTools;
 import com.syx.taobao.vo.ResultVo;
 import com.syx.taobao.vo.im.BaseImVo;
+import com.syx.taobao.vo.im.ImMineVo;
 import com.syx.taobao.websocket.common.ImChannelGroup;
 
 import io.netty.channel.Channel;
@@ -59,7 +60,7 @@ public class WebSocketServerHandle extends SimpleChannelInboundHandler<Object> {
 	// 处理HTTP
 	private void handleHttpRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
 		// 升级为websocket
-		if ("websocket".equals(req.headers().get("Upgrade"))) {
+		if (req.headers().get("Upgrade") != null && "websocket".equals(req.headers().get("Upgrade").toString().toLowerCase())) {
 			WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(getWebSocketLocation(req), null, true);
 			handshaker = wsFactory.newHandshaker(req);
 			if (handshaker == null) {
@@ -80,7 +81,16 @@ public class WebSocketServerHandle extends SimpleChannelInboundHandler<Object> {
 	private void handleWebSocketFrame(ChannelHandlerContext channel, WebSocketFrame frame) {
 		// 是否是关闭链路指令
 		if (frame instanceof CloseWebSocketFrame) {
+			final int userId = ImChannelGroup.getUserId(channel.channel().id().asLongText());
+			// 广告所有好友下线信息
+			BaseImVo vo = new BaseImVo();
+			vo.setMine(new ImMineVo(null, null, userId, true, null));
+			vo.setType("hide");
+			vo.setResultCode(0);
+			websocketTextMsgHandle(channel, new TextWebSocketFrame(JsonTools.writeToOrg(vo)));
+			// 移除信息
 			ImChannelGroup.removeChannel(channel.channel());
+			ImChannelGroup.removeMap(userId);
 			handshaker.close(channel.channel(), (CloseWebSocketFrame) frame.retain());
 			return;
 		}
@@ -117,6 +127,8 @@ public class WebSocketServerHandle extends SimpleChannelInboundHandler<Object> {
 
 	@SuppressWarnings("unchecked")
 	private void websocketTextMsgHandle(ChannelHandlerContext channel, WebSocketFrame frame) {
+		List<Integer> friends = null;
+		List<Integer> offLineFriends = new ArrayList<>();
 		// 接收到的信息
 		String msg = ((TextWebSocketFrame) frame).text();
 		try {
@@ -127,8 +139,7 @@ public class WebSocketServerHandle extends SimpleChannelInboundHandler<Object> {
 				switch (imvo.getResultCode()) {
 				case AppConstant.IM_CODE_CONNECT_SUCCESS:
 					ImChannelGroup.addMap(imvo.getMine().getId(), channel.channel().id().asLongText());
-					List<Integer> friends = (List<Integer>) imvo.getData();
-					List<Integer> offLineFriends = new ArrayList<>();
+					friends = (List<Integer>) imvo.getData();
 					// 通知
 					for (int mId : friends) {
 						Channel targetChannel = ImChannelGroup.getChannel(ImChannelGroup.getChannelId(mId));
@@ -142,6 +153,28 @@ public class WebSocketServerHandle extends SimpleChannelInboundHandler<Object> {
 					imvo.setData(offLineFriends);
 					vo.setData(imvo);
 					channel.channel().write(new TextWebSocketFrame(JsonTools.writeToOrg(vo)));
+					break;
+				case AppConstant.IM_CODE_NOTICE_ONLINE:
+					friends = (List<Integer>) imvo.getData();
+					// 通知
+					for (int mId : friends) {
+						Channel targetChannel = ImChannelGroup.getChannel(ImChannelGroup.getChannelId(mId));
+						if (targetChannel != null && targetChannel.isActive()) {
+							targetChannel.writeAndFlush(new TextWebSocketFrame(
+									JsonTools.writeToOrg(new ResultVo(AppConstant.RESULT_STATUS_SUCCESS, null, new BaseImVo(AppConstant.IM_CODE_NOTICE_ONLINE, imvo.getMine().getId())))));
+						}
+					}
+					break;
+				case AppConstant.IM_CODE_NOTICE_OFFLINE:
+					friends = (List<Integer>) imvo.getData();
+					// 通知
+					for (int mId : friends) {
+						Channel targetChannel = ImChannelGroup.getChannel(ImChannelGroup.getChannelId(mId));
+						if (targetChannel != null && targetChannel.isActive()) {
+							targetChannel.writeAndFlush(new TextWebSocketFrame(
+									JsonTools.writeToOrg(new ResultVo(AppConstant.RESULT_STATUS_SUCCESS, null, new BaseImVo(AppConstant.IM_CODE_NOTICE_OFFLINE, imvo.getMine().getId())))));
+						}
+					}
 					break;
 				case AppConstant.IM_CODE_NOTICE_NEWMSG:
 					Channel targetChannel = ImChannelGroup.getChannel(ImChannelGroup.getChannelId(imvo.getTo().getId()));

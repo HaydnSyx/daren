@@ -47,4 +47,15 @@ public class ImMineVo {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+	public ImMineVo() {
+	}
+
+	public ImMineVo(String avatar, String content, int id, boolean mine, String username) {
+		this.avatar = avatar;
+		this.content = content;
+		this.id = id;
+		this.mine = mine;
+		this.username = username;
+	}
 }

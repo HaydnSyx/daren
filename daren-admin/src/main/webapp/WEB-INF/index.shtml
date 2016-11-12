@@ -6,9 +6,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <#include "/common.shtml" />
 <link rel="stylesheet" href="${rc.contextPath}/css/compiled/tables.css" type="text/css" media="screen" />
-<style type="text/css">
-  	.layim-list-gray{-webkit-filter: grayscale(100%);  -ms-filter: grayscale(100%); filter: grayscale(100%);}
-</style>
 </head>
 <body>
 
@@ -27,66 +24,14 @@
 	</div>
 	<!-- end main container -->
 	<link rel="stylesheet" href="${rc.contextPath}/js/layui/css/layui.css" type="text/css" media="screen" />
+	<style type="text/css" >
+	  	.layim-list-gray{-webkit-filter: grayscale(100%);  -ms-filter: grayscale(100%); filter: grayscale(100%);}
+	</style>
 	<script type="text/javascript" src="${rc.contextPath}/js/layui/layui.js"></script>
 	<script type="text/javascript">
-	var socket;
+	var socket = null;
 	layui.use('layim', function(layim){
 		if (window.WebSocket) {
-			socket = new WebSocket('ws://127.0.0.1:8888');
-			socket.onmessage = function(event) {
-				var re = JSON.parse(event.data);
-				// 发送成功
-				if(re.status == 1){
-					var data = re.data;
-					// 连接成功
-					if(data.resultCode == 1){
-						layer.msg("连接服务器成功",{icon:1});
-						var offLineFriends = data.data;
-						for(var i in offLineFriends) {
-							var s = offLineFriends[i];
-							if(!$('#layim-friend'+s).hasClass('layim-list-gray')){
-								console.info($('#layim-friend'+s));
-								$('#layim-friend'+s).addClass('layim-list-gray');
-							}
-						}
-					}
-					// 连接失败
-					if(data.resultCode == 2){
-					}
-					// 接收到好友信息
-					else if(data.resultCode == 3){
-						layim.getMessage(data.msg);
-					}
-					// 好友上线
-					else if(data.resultCode == 4){
-						if($('#layim-friend'+data.data).hasClass('layim-list-gray')){
-							$('#layim-friend'+data.data).removeClass('layim-list-gray');
-						}
-					}
-					// 好友下线
-					else if(data.resultCode == 5){
-						if(!$('#layim-friend'+data.data).hasClass('layim-list-gray')){
-							$('#layim-friend'+data.data).addClass('layim-list-gray');
-						}
-					}
-					// 发送失败
-					else if(data.resultCode == 9){
-					}
-				}
-				// 错误
-				else{
-					layer.msg(re.message,{icon:2});
-				}
-			};
-			socket.onopen = function(event) {
-				var mine = new Mine(null,null,${mid!''},true,null);
-				var to = new To(null,0,null,null,null,null);
-				var msg = new Msg(mine,to,'bind',0);
-				socket.send(JSON.stringify(msg));
-			};
-			socket.onclose = function(event) {
-				layer.msg("连接关闭",{icon:1});
-			};
 			layim.config({
 				brief: false,
 				copyright: true,
@@ -109,12 +54,65 @@
 			    }
 			});
 			layim.on('ready', function(options){
+				
+				socket = new WebSocket('ws://127.0.0.1:8888');
+				socket.onmessage = function(event) {
+					var re = JSON.parse(event.data);
+					// 发送成功
+					if(re.status == 1){
+						var data = re.data;
+						// 连接成功
+						if(data.resultCode == 1){
+							layer.msg("连接服务器成功",{icon:1});
+							var offLineFriends = data.data;
+							for(var i in offLineFriends) {
+								var s = offLineFriends[i];
+								if(!$('#layim-friend'+s).hasClass('layim-list-gray')){
+									// 不是很稳定还需优化
+									$('#layim-friend'+s).addClass('layim-list-gray');
+								}
+							}
+						}
+						// 连接失败
+						if(data.resultCode == 2){
+						}
+						// 接收到好友信息
+						else if(data.resultCode == 3){
+							layim.getMessage(data.msg);
+						}
+						// 好友上线
+						else if(data.resultCode == 4){
+							if($('#layim-friend'+data.data).hasClass('layim-list-gray')){
+								$('#layim-friend'+data.data).removeClass('layim-list-gray');
+							}
+						}
+						// 好友下线
+						else if(data.resultCode == 5){
+							if(!$('#layim-friend'+data.data).hasClass('layim-list-gray')){
+								$('#layim-friend'+data.data).addClass('layim-list-gray');
+							}
+						}
+						// 发送失败
+						else if(data.resultCode == 9){
+						}
+					}
+					// 错误
+					else{
+						layer.msg(re.message,{icon:2});
+					}
+				};
+				socket.onopen = function(event) {
+					sendMsgToServer('bind');
+				};
 			});
 			layim.on('sendMessage', function(res){
 				res.type = res.to.type;
 				var msg = JSON.stringify(res);
 				socket.send(msg);
 			});
+			layim.on('online', function(status){
+				sendMsgToServer(status);
+			});  
 		}else{
 			layer.msg("浏览器对不起浏览器不支持在线聊天系统！",{icon:2});
 		}
@@ -140,6 +138,13 @@
 		this.sign = sign;
 		this.type = type;
 		this.username = username;
+	}
+	
+	function sendMsgToServer(status){
+		var mine = new Mine(null,null,${mid!''},true,null);
+		var to = new To(null,0,null,null,null,null);
+		var msg = new Msg(mine,to,status,0);
+		socket.send(JSON.stringify(msg));
 	}
 	</script>
 </body>

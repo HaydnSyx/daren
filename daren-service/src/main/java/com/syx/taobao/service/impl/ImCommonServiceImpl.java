@@ -45,6 +45,28 @@ public class ImCommonServiceImpl implements ImCommonService {
 					}
 				}
 				vo.setData(friends);
+			} else if ("online".equals(vo.getType())) {
+				vo.setResultCode(AppConstant.IM_CODE_NOTICE_ONLINE);
+				List<Integer> friends = new ArrayList<>();
+				// 好友列表
+				List<ImFriendGroup> imFriendGroupList = imFriendGroupDao.queryImFriendGroupByMId(vo.getMine().getId());
+				for (ImFriendGroup imFriendGroup : imFriendGroupList) {
+					for (ImFriendGroupMem imFriendGroupMem : imFriendGroup.getFriendGroupMems()) {
+						friends.add(imFriendGroupMem.getmId());
+					}
+				}
+				vo.setData(friends);
+			} else if ("hide".equals(vo.getType())) {
+				vo.setResultCode(AppConstant.IM_CODE_NOTICE_OFFLINE);
+				List<Integer> friends = new ArrayList<>();
+				// 好友列表
+				List<ImFriendGroup> imFriendGroupList = imFriendGroupDao.queryImFriendGroupByMId(vo.getMine().getId());
+				for (ImFriendGroup imFriendGroup : imFriendGroupList) {
+					for (ImFriendGroupMem imFriendGroupMem : imFriendGroup.getFriendGroupMems()) {
+						friends.add(imFriendGroupMem.getmId());
+					}
+				}
+				vo.setData(friends);
 			} else if ("friend".equals(vo.getType())) {
 				vo.setResultCode(AppConstant.IM_CODE_NOTICE_NEWMSG);
 				MsgVo m = new MsgVo();

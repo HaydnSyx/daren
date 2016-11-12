@@ -53,6 +53,19 @@ public class ImChannelGroup {
 		group.remove(channel);
 	}
 
+	public static int getUserId(String channelId) {
+		int userId = 0;
+		if (!map.isEmpty()) {
+			for (int key : map.keySet()) {
+				if (map.get(key).equals(channelId)) {
+					userId = key;
+					break;
+				}
+			}
+		}
+		return userId;
+	}
+
 	public static Channel getChannel(String channelId) {
 		if (StringUtil.isNull(channelId)) {
 			return null;
